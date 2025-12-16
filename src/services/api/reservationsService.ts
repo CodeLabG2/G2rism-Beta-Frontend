@@ -147,7 +147,7 @@ export interface ReservaStatistics {
  * @version 1.0
  */
 class ReservationsService {
-  private readonly baseUrl = '/reservas';
+  private readonly baseUrl = '/api/reservas';
 
   /**
    * Obtener todas las reservas (con filtros opcionales)

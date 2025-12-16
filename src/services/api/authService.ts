@@ -16,7 +16,7 @@ class AuthService {
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
       const response = await api.post<ApiResponse<LoginResponse>>(
-        '/auth/login',
+        '/api/auth/login',
         credentials
       );
 
@@ -46,7 +46,7 @@ class AuthService {
   }): Promise<LoginResponse> {
     try {
       const response = await api.post<ApiResponse<LoginResponse>>(
-        '/auth/register',
+        '/api/auth/register',
         data
       );
 
@@ -70,7 +70,7 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       // Llamar al endpoint de logout (opcional)
-      await api.post('/auth/logout');
+      await api.post('/api/auth/logout');
     } catch (error) {
       console.error('Error en logout:', error);
     } finally {
@@ -91,7 +91,7 @@ class AuthService {
       }
 
       const response = await api.post<ApiResponse<{ token: string }>>(
-        '/auth/refresh',
+        '/api/auth/refresh',
         { refreshToken }
       );
 
@@ -111,7 +111,7 @@ class AuthService {
    */
   async getProfile(): Promise<AuthUser> {
     try {
-      const response = await api.get<ApiResponse<AuthUser>>('/auth/profile');
+      const response = await api.get<ApiResponse<AuthUser>>('/api/auth/profile');
       const user = response.data.data;
       this.setUser(user);
       return user;
@@ -126,7 +126,7 @@ class AuthService {
    */
   async updateProfile(data: Partial<AuthUser>): Promise<AuthUser> {
     try {
-      const response = await api.put<ApiResponse<AuthUser>>('/auth/profile', data);
+      const response = await api.put<ApiResponse<AuthUser>>('/api/auth/profile', data);
       const user = response.data.data;
       this.setUser(user);
       return user;
@@ -144,7 +144,7 @@ class AuthService {
     newPassword: string;
   }): Promise<void> {
     try {
-      await api.post('/auth/change-password', data);
+      await api.post('/api/auth/cambiar-password', data);
     } catch (error) {
       console.error('Error al cambiar contraseña:', error);
       throw error;
@@ -156,7 +156,7 @@ class AuthService {
    */
   async forgotPassword(email: string): Promise<void> {
     try {
-      await api.post('/auth/forgot-password', { email });
+      await api.post('/api/auth/recuperar-password', { email });
     } catch (error) {
       console.error('Error al recuperar contraseña:', error);
       throw error;
@@ -171,7 +171,7 @@ class AuthService {
     newPassword: string;
   }): Promise<void> {
     try {
-      await api.post('/auth/reset-password', data);
+      await api.post('/api/auth/reset-password', data);
     } catch (error) {
       console.error('Error al resetear contraseña:', error);
       throw error;

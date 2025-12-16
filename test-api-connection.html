@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Conexión API G2rism</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        .config-info {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        .config-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        .config-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .test-section {
+            margin-bottom: 25px;
+        }
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .test-section h3::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+        .result.show {
+            display: block;
+        }
+        .result.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        .result.error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+        .result.info {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            color: #0c5460;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status-badge.success {
+            background: #28a745;
+            color: white;
+        }
+        .status-badge.error {
+            background: #dc3545;
+            color: white;
+        }
+        .status-badge.pending {
+            background: #ffc107;
+            color: #333;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        .loader.show {
+            display: block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Test de Conexión API G2rism</h1>
+        <p class="subtitle">Verificación de conectividad entre Frontend y Backend .NET</p>
+
+        <div class="config-info">
+            <h3>📋 Configuración Actual</h3>
+            <p><strong>Backend URL:</strong> http://localhost:5026</p>
+            <p><strong>Frontend URL:</strong> http://localhost:3000</p>
+            <p><strong>CORS:</strong> Configurado ✓</p>
+        </div>
+
+        <div class="test-section">
+            <h3>1. Test de Conectividad Básica</h3>
+            <button onclick="testBasicConnection()">🌐 Probar Conexión al Backend</button>
+            <div class="loader" id="loader1"></div>
+            <div class="result" id="result1"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Test de Endpoint Roles</h3>
+            <button onclick="testRolesEndpoint()">👥 GET /api/roles</button>
+            <div class="loader" id="loader2"></div>
+            <div class="result" id="result2"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Test de Endpoint Clientes</h3>
+            <button onclick="testClientesEndpoint()">🧑‍💼 GET /api/clientes</button>
+            <div class="loader" id="loader3"></div>
+            <div class="result" id="result3"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Test Completo de Endpoints</h3>
+            <button onclick="testAllEndpoints()">🚀 Probar Todos los Endpoints</button>
+            <div class="loader" id="loader4"></div>
+            <div class="result" id="result4"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5026';
+
+        function showLoader(loaderId) {
+            document.getElementById(loaderId).classList.add('show');
+        }
+
+        function hideLoader(loaderId) {
+            document.getElementById(loaderId).classList.remove('show');
+        }
+
+        function showResult(resultId, message, type) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.className = `result ${type} show`;
+            resultDiv.innerHTML = message;
+        }
+
+        async function testBasicConnection() {
+            showLoader('loader1');
+            showResult('result1', 'Probando conexión...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                hideLoader('loader1');
+
+                if (response.ok || response.status === 404) {
+                    showResult('result1', `
+                        <strong>✅ CONEXIÓN EXITOSA</strong><br><br>
+                        <strong>Status Code:</strong> ${response.status}<br>
+                        <strong>Status Text:</strong> ${response.statusText}<br>
+                        <strong>URL Probada:</strong> ${API_BASE_URL}/api<br><br>
+                        <em>El backend está respondiendo correctamente. Un 404 es normal para la ruta /api sin endpoint específico.</em>
+                    `, 'success');
+                } else {
+                    throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                hideLoader('loader1');
+                showResult('result1', `
+                    <strong>❌ ERROR DE CONEXIÓN</strong><br><br>
+                    <strong>Mensaje:</strong> ${error.message}<br><br>
+                    <strong>Posibles causas:</strong><br>
+                    • El backend no está corriendo en el puerto 5026<br>
+                    • Problemas de CORS<br>
+                    • Firewall bloqueando la conexión<br><br>
+                    <strong>Solución:</strong><br>
+                    1. Asegúrate de que el backend esté corriendo<br>
+                    2. Verifica que appsettings.json tenga http://localhost:3000 en AllowedFrontendUrls
+                `, 'error');
+            }
+        }
+
+        async function testRolesEndpoint() {
+            showLoader('loader2');
+            showResult('result2', 'Probando endpoint de roles...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/roles`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                hideLoader('loader2');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('result2', `
+                        <strong>✅ ENDPOINT FUNCIONANDO</strong><br><br>
+                        <strong>Status:</strong> ${response.status} ${response.statusText}<br>
+                        <strong>Endpoint:</strong> GET /api/roles<br>
+                        <strong>Registros encontrados:</strong> ${Array.isArray(data) ? data.length : 'N/A'}<br><br>
+                        <strong>Respuesta:</strong><br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'success');
+                } else if (response.status === 401) {
+                    showResult('result2', `
+                        <strong>🔒 REQUIERE AUTENTICACIÓN</strong><br><br>
+                        <strong>Status:</strong> ${response.status} Unauthorized<br>
+                        <strong>Endpoint:</strong> GET /api/roles<br><br>
+                        <em>Este endpoint requiere autenticación JWT. Es normal si el endpoint está protegido.</em>
+                    `, 'info');
+                } else {
+                    throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                hideLoader('loader2');
+                showResult('result2', `
+                    <strong>❌ ERROR</strong><br><br>
+                    <strong>Mensaje:</strong> ${error.message}<br>
+                    <strong>Endpoint:</strong> GET /api/roles
+                `, 'error');
+            }
+        }
+
+        async function testClientesEndpoint() {
+            showLoader('loader3');
+            showResult('result3', 'Probando endpoint de clientes...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/clientes`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                hideLoader('loader3');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('result3', `
+                        <strong>✅ ENDPOINT FUNCIONANDO</strong><br><br>
+                        <strong>Status:</strong> ${response.status} ${response.statusText}<br>
+                        <strong>Endpoint:</strong> GET /api/clientes<br>
+                        <strong>Registros encontrados:</strong> ${Array.isArray(data) ? data.length : 'N/A'}<br><br>
+                        <strong>Respuesta:</strong><br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'success');
+                } else if (response.status === 401) {
+                    showResult('result3', `
+                        <strong>🔒 REQUIERE AUTENTICACIÓN</strong><br><br>
+                        <strong>Status:</strong> ${response.status} Unauthorized<br>
+                        <strong>Endpoint:</strong> GET /api/clientes<br><br>
+                        <em>Este endpoint requiere autenticación JWT.</em>
+                    `, 'info');
+                } else {
+                    throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                hideLoader('loader3');
+                showResult('result3', `
+                    <strong>❌ ERROR</strong><br><br>
+                    <strong>Mensaje:</strong> ${error.message}<br>
+                    <strong>Endpoint:</strong> GET /api/clientes
+                `, 'error');
+            }
+        }
+
+        async function testAllEndpoints() {
+            showLoader('loader4');
+            showResult('result4', 'Probando todos los endpoints...', 'info');
+
+            const endpoints = [
+                { name: 'Roles', url: '/api/roles' },
+                { name: 'Permisos', url: '/api/permisos' },
+                { name: 'Usuarios', url: '/api/usuarios' },
+                { name: 'Clientes', url: '/api/clientes' },
+                { name: 'Empleados', url: '/api/empleados' },
+                { name: 'Proveedores', url: '/api/proveedores' },
+                { name: 'Ventas', url: '/api/ventas' },
+                { name: 'Cotizaciones', url: '/api/cotizaciones' },
+                { name: 'Facturas', url: '/api/facturas' }
+            ];
+
+            const results = [];
+
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint.url}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    let status = '';
+                    if (response.ok) {
+                        status = '✅ OK';
+                    } else if (response.status === 401) {
+                        status = '🔒 Requiere Auth';
+                    } else {
+                        status = `❌ ${response.status}`;
+                    }
+
+                    results.push({
+                        name: endpoint.name,
+                        url: endpoint.url,
+                        status: status,
+                        statusCode: response.status
+                    });
+                } catch (error) {
+                    results.push({
+                        name: endpoint.name,
+                        url: endpoint.url,
+                        status: '❌ Error',
+                        error: error.message
+                    });
+                }
+            }
+
+            hideLoader('loader4');
+
+            const successCount = results.filter(r => r.status.includes('✅') || r.status.includes('🔒')).length;
+            const totalCount = results.length;
+
+            let html = `
+                <strong>📊 RESUMEN DE PRUEBAS</strong><br><br>
+                <strong>Endpoints probados:</strong> ${totalCount}<br>
+                <strong>Exitosos/Auth:</strong> ${successCount}/${totalCount}<br>
+                <strong>Fallidos:</strong> ${totalCount - successCount}<br><br>
+                <strong>Detalles:</strong><br><br>
+            `;
+
+            results.forEach(r => {
+                html += `<strong>${r.name}:</strong> ${r.status} - ${r.url}<br>`;
+            });
+
+            showResult('result4', html, successCount === totalCount ? 'success' : (successCount > 0 ? 'info' : 'error'));
+        }
+    </script>
+</body>
+</html>
