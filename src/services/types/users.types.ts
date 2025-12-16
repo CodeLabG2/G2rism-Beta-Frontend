@@ -2,6 +2,8 @@
 // USERS TYPES
 // ===========================
 
+import type { PermissionSummary } from './roles.types';
+
 /**
  * Representa un usuario del sistema
  */
@@ -9,7 +11,7 @@ export interface User {
   idUsuario: number;
   username: string;
   email: string;
-  tipoUsuario: 'empleado' | 'cliente';
+  tipoUsuario: 'superadmin' | 'admin' | 'empleado' | 'cliente';
   estado: boolean;
   bloqueado: boolean;
   intentosFallidos: number;
@@ -34,6 +36,7 @@ export interface RoleSummary {
   descripcion?: string;
   nivelAcceso: number;
   fechaAsignacion: string;
+  permisos?: PermissionSummary[];
 }
 
 /**
@@ -43,7 +46,7 @@ export interface CreateUserDto {
   username: string;
   email: string;
   password: string;
-  tipoUsuario: 'empleado' | 'cliente';
+  tipoUsuario: 'superadmin' | 'admin' | 'empleado' | 'cliente';
   rolesIds?: number[];
 }
 
@@ -52,7 +55,7 @@ export interface CreateUserDto {
  */
 export interface UpdateUserDto {
   email?: string;
-  tipoUsuario?: 'empleado' | 'cliente';
+  tipoUsuario?: 'superadmin' | 'admin' | 'empleado' | 'cliente';
 }
 
 /**
@@ -67,7 +70,7 @@ export interface AssignRolesDto {
  */
 export interface UsersFilters {
   incluirInactivos?: boolean;
-  tipoUsuario?: 'empleado' | 'cliente';
+  tipoUsuario?: 'superadmin' | 'admin' | 'empleado' | 'cliente';
   estado?: boolean;
 }
 

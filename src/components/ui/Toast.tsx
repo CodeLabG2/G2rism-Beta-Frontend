@@ -1,4 +1,4 @@
-import { toast as sonnerToast, Toaster } from 'sonner@2.0.3';
+import { toast as sonnerToast, Toaster } from 'sonner';
 
 export const toast = {
   success: (message: string) => {

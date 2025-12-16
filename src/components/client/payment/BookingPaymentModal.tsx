@@ -2,7 +2,7 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { PaymentPage } from './PaymentPage';
 import { motion } from 'motion/react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface BookingPaymentModalProps {
   booking: any;

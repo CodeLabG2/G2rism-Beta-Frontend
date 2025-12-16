@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Calendar, Users, MapPin, Package, DollarSign, Check, ArrowRight, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface CreateReservationModalProps {
   isOpen: boolean;

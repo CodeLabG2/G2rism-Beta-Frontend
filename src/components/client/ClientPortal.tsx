@@ -39,7 +39,7 @@ import {
   ArrowUpDown,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { toast, Toaster } from 'sonner@2.0.3';
+import { toast, Toaster } from 'sonner';
 
 interface ClientPortalProps {
   user: { name: string; email: string; category: string; points: number };

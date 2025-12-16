@@ -9,7 +9,7 @@ import { ClientPortal } from './components/client/ClientPortal';
 import { SuperAdminPortal } from './components/superadmin/SuperAdminPortal';
 import { AdminPortal } from './components/admin/AdminPortal';
 import { WelcomeModal } from './components/onboarding/WelcomeModal';
-import { Toaster, toast } from 'sonner@2.0.3';
+import { Toaster, toast } from 'sonner';
 import { getEmployeeByEmail } from './data/mockEmployees';
 import type { UserWithRoles } from './services/types/users.types';
 

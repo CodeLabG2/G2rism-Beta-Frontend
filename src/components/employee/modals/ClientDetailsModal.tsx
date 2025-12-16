@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, User, Mail, Phone, MapPin, Calendar, DollarSign, Award, History, FileText, Edit2, Save } from 'lucide-react';
 import { motion } from 'motion/react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface ClientDetailsModalProps {
   isOpen: boolean;
