@@ -1,6 +1,9 @@
-import React from 'react';
 import { SalesManagement } from './sales/SalesManagement';
 
-export function SalesView() {
+interface SalesViewProps {
+  canDelete?: boolean;
+}
+
+export function SalesView({ canDelete }: SalesViewProps) {
   return <SalesManagement />;
 }

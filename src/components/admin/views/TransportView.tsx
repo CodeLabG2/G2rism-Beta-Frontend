@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TransportManagement } from './transport/TransportManagement';
 import { TransportExamples } from './transport/TransportExamples';
 import { TransportUseCases } from './transport/TransportUseCases';
@@ -7,7 +7,11 @@ import { Eye, Grid, BookOpen } from 'lucide-react';
 
 type ViewMode = 'management' | 'examples' | 'usecases';
 
-export function TransportView() {
+interface TransportViewProps {
+  canDelete?: boolean;
+}
+
+export function TransportView({ canDelete }: TransportViewProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('management');
 
   return (

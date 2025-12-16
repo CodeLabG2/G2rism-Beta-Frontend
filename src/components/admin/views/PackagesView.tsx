@@ -1,6 +1,9 @@
-import React from 'react';
 import { PackagesManagement } from './packages/PackagesManagement';
 
-export function PackagesView() {
+interface PackagesViewProps {
+  canDelete?: boolean;
+}
+
+export function PackagesView({ canDelete }: PackagesViewProps) {
   return <PackagesManagement />;
 }

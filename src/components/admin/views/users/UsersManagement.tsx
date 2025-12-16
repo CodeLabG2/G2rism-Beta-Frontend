@@ -267,7 +267,7 @@ export function UsersManagement() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleExportUsers}>
+            <Button variant="secondary" size="sm" onClick={handleExportUsers}>
               <Download size={16} />
               Exportar
             </Button>
@@ -549,7 +549,7 @@ export function UsersManagement() {
 
           <div className="flex justify-end gap-3 pt-4">
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={() => {
                 setIsChangePasswordModalOpen(false);
                 setPasswordData({ newPassword: '', confirmPassword: '' });

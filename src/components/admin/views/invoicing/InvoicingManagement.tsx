@@ -301,7 +301,7 @@ export function InvoicingManagement() {
               />
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
+              <Button variant="secondary" onClick={() => setShowFilters(!showFilters)}>
                 <Filter size={18} />
                 Filtros
               </Button>

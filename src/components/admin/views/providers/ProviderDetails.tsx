@@ -121,10 +121,10 @@ export function ProviderDetails({ provider, onClose, onEdit, onDelete }: Provide
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" icon={<Edit size={16} />} onClick={onEdit}>
+            <Button variant="secondary" size="sm" icon={<Edit size={16} />} onClick={onEdit}>
               Editar
             </Button>
-            <Button variant="outline" size="sm" icon={<Trash2 size={16} />} onClick={onDelete}>
+            <Button variant="secondary" size="sm" icon={<Trash2 size={16} />} onClick={onDelete}>
               Eliminar
             </Button>
           </div>
@@ -331,7 +331,7 @@ export function ProviderDetails({ provider, onClose, onEdit, onDelete }: Provide
 
         {/* Footer */}
         <div className="flex justify-end pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose}>
             Cerrar
           </Button>
         </div>

@@ -264,7 +264,7 @@ export function AdminSettingsManagement() {
             <div className="flex gap-2">
               {editMode ? (
                 <>
-                  <Button variant="outline" onClick={() => setEditMode(false)}>
+                  <Button variant="secondary" onClick={() => setEditMode(false)}>
                     Cancelar
                   </Button>
                   <Button variant="primary" onClick={handleSave}>
@@ -368,13 +368,13 @@ export function AdminSettingsManagement() {
               <p className="text-sm text-gray-600 mt-1">Facturación electrónica DIAN Colombia</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => handleTestConnection('DIAN')}>
+              <Button variant="secondary" onClick={() => handleTestConnection('DIAN')}>
                 <TestTube size={18} />
                 Probar Conexión
               </Button>
               {editMode ? (
                 <>
-                  <Button variant="outline" onClick={() => setEditMode(false)}>
+                  <Button variant="secondary" onClick={() => setEditMode(false)}>
                     Cancelar
                   </Button>
                   <Button variant="primary" onClick={handleSave}>
@@ -490,7 +490,7 @@ export function AdminSettingsManagement() {
             <div className="flex gap-2">
               {editMode ? (
                 <>
-                  <Button variant="outline" onClick={() => setEditMode(false)}>
+                  <Button variant="secondary" onClick={() => setEditMode(false)}>
                     Cancelar
                   </Button>
                   <Button variant="primary" onClick={handleSave}>
@@ -735,13 +735,13 @@ export function AdminSettingsManagement() {
               <p className="text-sm text-gray-600 mt-1">Servidor SMTP y plantillas de correo</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => handleTestConnection('Email')}>
+              <Button variant="secondary" onClick={() => handleTestConnection('Email')}>
                 <TestTube size={18} />
                 Enviar Prueba
               </Button>
               {editMode ? (
                 <>
-                  <Button variant="outline" onClick={() => setEditMode(false)}>
+                  <Button variant="secondary" onClick={() => setEditMode(false)}>
                     Cancelar
                   </Button>
                   <Button variant="primary" onClick={handleSave}>
@@ -813,7 +813,7 @@ export function AdminSettingsManagement() {
                   <Badge variant="success">Activa</Badge>
                 </div>
                 <p className="text-xs text-gray-600 mb-3">Se envía al confirmar una reserva</p>
-                <Button variant="outline" size="sm">
+                <Button variant="secondary" size="sm">
                   <Edit size={14} />
                   Editar Plantilla
                 </Button>
@@ -824,7 +824,7 @@ export function AdminSettingsManagement() {
                   <Badge variant="success">Activa</Badge>
                 </div>
                 <p className="text-xs text-gray-600 mb-3">Se envía al registrar un pago</p>
-                <Button variant="outline" size="sm">
+                <Button variant="secondary" size="sm">
                   <Edit size={14} />
                   Editar Plantilla
                 </Button>
@@ -845,7 +845,7 @@ export function AdminSettingsManagement() {
             <div className="flex gap-2">
               {editMode ? (
                 <>
-                  <Button variant="outline" onClick={() => setEditMode(false)}>
+                  <Button variant="secondary" onClick={() => setEditMode(false)}>
                     Cancelar
                   </Button>
                   <Button variant="primary" onClick={handleSave}>
@@ -1054,7 +1054,7 @@ export function AdminSettingsManagement() {
           </div>
 
           <div className="mt-6">
-            <Button variant="outline" className="w-full">
+            <Button variant="secondary" className="w-full">
               <Zap size={18} />
               Agregar Nueva Integración
             </Button>
@@ -1073,7 +1073,7 @@ export function AdminSettingsManagement() {
             <div className="flex gap-2">
               {editMode ? (
                 <>
-                  <Button variant="outline" onClick={() => setEditMode(false)}>
+                  <Button variant="secondary" onClick={() => setEditMode(false)}>
                     Cancelar
                   </Button>
                   <Button variant="primary" onClick={handleSave}>
@@ -1156,7 +1156,7 @@ export function AdminSettingsManagement() {
                 <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg text-center">
                   <Palette size={32} className="mx-auto text-gray-400 mb-2" />
                   <p className="text-sm text-gray-600 mb-2">Logo Principal</p>
-                  <Button variant="outline" size="sm" disabled={!editMode}>
+                  <Button variant="secondary" size="sm" disabled={!editMode}>
                     <Download size={14} />
                     Cargar
                   </Button>
@@ -1164,7 +1164,7 @@ export function AdminSettingsManagement() {
                 <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg text-center">
                   <Palette size={32} className="mx-auto text-gray-400 mb-2" />
                   <p className="text-sm text-gray-600 mb-2">Favicon</p>
-                  <Button variant="outline" size="sm" disabled={!editMode}>
+                  <Button variant="secondary" size="sm" disabled={!editMode}>
                     <Download size={14} />
                     Cargar
                   </Button>
@@ -1172,7 +1172,7 @@ export function AdminSettingsManagement() {
                 <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg text-center">
                   <Palette size={32} className="mx-auto text-gray-400 mb-2" />
                   <p className="text-sm text-gray-600 mb-2">Logo Email</p>
-                  <Button variant="outline" size="sm" disabled={!editMode}>
+                  <Button variant="secondary" size="sm" disabled={!editMode}>
                     <Download size={14} />
                     Cargar
                   </Button>

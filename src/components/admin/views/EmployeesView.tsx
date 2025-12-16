@@ -1,6 +1,9 @@
-import React from 'react';
 import { EmployeesManagement } from './employees/EmployeesManagement';
 
-export function EmployeesView() {
+interface EmployeesViewProps {
+  canDelete?: boolean;
+}
+
+export function EmployeesView({ canDelete }: EmployeesViewProps) {
   return <EmployeesManagement />;
 }

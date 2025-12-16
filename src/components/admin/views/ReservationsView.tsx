@@ -1,6 +1,9 @@
-import React from 'react';
 import { ReservationsManagement } from './reservations/ReservationsManagement';
 
-export function ReservationsView() {
+interface ReservationsViewProps {
+  canDelete?: boolean;
+}
+
+export function ReservationsView({ canDelete }: ReservationsViewProps) {
   return <ReservationsManagement />;
 }

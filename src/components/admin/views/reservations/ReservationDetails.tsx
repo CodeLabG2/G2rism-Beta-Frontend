@@ -51,7 +51,7 @@ export function ReservationDetails({
   const getPaymentStatusConfig = (status: string) => {
     const configs = {
       pending: { label: 'Pendiente', color: 'yellow' as const },
-      partial: { label: 'Parcial', color: 'orange' as const },
+      partial: { label: 'Parcial', color: 'warning' as const },
       paid: { label: 'Pagado', color: 'green' as const },
       refunded: { label: 'Reembolsado', color: 'purple' as const },
     };
@@ -214,7 +214,7 @@ export function ReservationDetails({
                   <Badge variant="blue" size="sm">Vuelos</Badge>
                 )}
                 {reservation.package.includesHotel && (
-                  <Badge variant="green" size="sm">Hotel</Badge>
+                  <Badge variant="success" size="sm">Hotel</Badge>
                 )}
               </div>
             </div>
@@ -347,7 +347,7 @@ export function ReservationDetails({
         <div className="flex justify-between pt-6 border-t border-gray-200">
           <div className="flex gap-2">
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={() => {
                 alert('Descarga de comprobante - Funcionalidad pendiente');
               }}
@@ -358,7 +358,7 @@ export function ReservationDetails({
           </div>
           <div className="flex gap-2">
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={() => {
                 if (confirm('¿Está seguro de eliminar esta reserva?')) {
                   onDelete(reservation.id);

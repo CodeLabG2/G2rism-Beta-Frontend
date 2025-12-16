@@ -113,10 +113,10 @@ export function InvoiceDetails({
                 >
                   Enviar a DIAN
                 </Button>
-                <Button variant="outline" size="sm" icon={<Edit size={16} />} onClick={onEdit}>
+                <Button variant="secondary" size="sm" icon={<Edit size={16} />} onClick={onEdit}>
                   Editar
                 </Button>
-                <Button variant="outline" size="sm" icon={<Trash2 size={16} />} onClick={onDelete}>
+                <Button variant="secondary" size="sm" icon={<Trash2 size={16} />} onClick={onDelete}>
                   Eliminar
                 </Button>
               </>
@@ -132,7 +132,7 @@ export function InvoiceDetails({
                   Descargar PDF
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   icon={<Download size={16} />}
                   onClick={onDownloadXML}
@@ -140,7 +140,7 @@ export function InvoiceDetails({
                   XML
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   icon={<Mail size={16} />}
                   onClick={onResendEmail}
@@ -148,7 +148,7 @@ export function InvoiceDetails({
                   Reenviar
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   icon={<RefreshCw size={16} />}
                   onClick={onCreateCreditNote}
@@ -156,7 +156,7 @@ export function InvoiceDetails({
                   Nota Crédito
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   icon={<Plus size={16} />}
                   onClick={onCreateDebitNote}
@@ -302,7 +302,7 @@ export function InvoiceDetails({
 
         {/* Footer */}
         <div className="flex justify-end pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose}>
             Cerrar
           </Button>
         </div>

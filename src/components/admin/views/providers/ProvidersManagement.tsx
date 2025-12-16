@@ -431,7 +431,7 @@ export function ProvidersManagement() {
               />
 
               <div className="flex items-end gap-2">
-                <Button variant="outline" onClick={clearFilters} className="w-full">
+                <Button variant="secondary" onClick={clearFilters} className="w-full">
                   Limpiar Filtros
                 </Button>
               </div>

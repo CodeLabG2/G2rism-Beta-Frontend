@@ -1,6 +1,9 @@
-import React from 'react';
 import { InvoicingManagement } from './invoicing/InvoicingManagement';
 
-export function InvoicingView() {
+interface InvoicingViewProps {
+  canDelete?: boolean;
+}
+
+export function InvoicingView({ canDelete }: InvoicingViewProps) {
   return <InvoicingManagement />;
 }

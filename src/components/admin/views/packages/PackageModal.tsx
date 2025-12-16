@@ -436,7 +436,7 @@ export function PackageModal({
 
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+            <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
               Cancelar
             </Button>
             <Button type="submit" variant="primary" className="flex-1">

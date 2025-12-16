@@ -170,7 +170,7 @@ export function PipelineView({ leads, onViewLead, onEditLead, formatCurrency }: 
               <div className={`${stage.color} text-white p-4 rounded-t-lg`}>
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-medium">{stage.label}</h3>
-                  <Badge variant="white" className="bg-white/20 text-white border-0">
+                  <Badge variant="gray" className="bg-white/20 text-white border-0">
                     {stage.count}
                   </Badge>
                 </div>

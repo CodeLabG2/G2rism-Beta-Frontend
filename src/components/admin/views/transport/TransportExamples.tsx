@@ -88,7 +88,7 @@ export function TransportExamples() {
             <div className="p-3 bg-green-50 rounded-lg">
               <Users className="text-green-600" size={24} />
             </div>
-            <Badge variant="green" size="sm">{stats.conductoresActivos} activos</Badge>
+            <Badge variant="success" size="sm">{stats.conductoresActivos} activos</Badge>
           </div>
           <h3 className="text-gray-600 text-sm mb-1">Conductores</h3>
           <p className="text-3xl text-gray-900 mb-2">{stats.totalConductores}</p>
@@ -106,7 +106,7 @@ export function TransportExamples() {
             <div className="p-3 bg-purple-50 rounded-lg">
               <MapPin className="text-purple-600" size={24} />
             </div>
-            <Badge variant="purple" size="sm">{stats.rutasActivas} activas</Badge>
+            <Badge variant="info" size="sm">{stats.rutasActivas} activas</Badge>
           </div>
           <h3 className="text-gray-600 text-sm mb-1">Rutas Turísticas</h3>
           <p className="text-3xl text-gray-900 mb-2">{stats.totalRutas}</p>
@@ -198,7 +198,7 @@ export function TransportExamples() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={conductor.activo ? 'green' : 'red'} size="sm">
+                  <Badge variant={conductor.activo ? 'success' : 'danger'} size="sm">
                     {conductor.activo ? 'Activo' : 'Inactivo'}
                   </Badge>
                   {isLicenseExpiringSoon(conductor) && (
@@ -230,7 +230,7 @@ export function TransportExamples() {
                     {ruta.origen} → {ruta.destino}
                   </p>
                 </div>
-                <Badge variant={ruta.estadoRuta === 'Activa' ? 'green' : 'orange'} size="sm">
+                <Badge variant={ruta.estadoRuta === 'Activa' ? 'success' : 'warning'} size="sm">
                   {ruta.estadoRuta}
                 </Badge>
               </div>
@@ -371,8 +371,8 @@ export function TransportExamples() {
             </p>
             <div className="flex flex-wrap gap-2 text-xs">
               <Badge variant="blue" size="sm">8 Vehículos</Badge>
-              <Badge variant="green" size="sm">7 Conductores</Badge>
-              <Badge variant="purple" size="sm">8 Rutas</Badge>
+              <Badge variant="success" size="sm">7 Conductores</Badge>
+              <Badge variant="info" size="sm">8 Rutas</Badge>
               <Badge variant="orange" size="sm">8 Asignaciones</Badge>
               <Badge variant="gray" size="sm">Datos Mock Automáticos</Badge>
             </div>

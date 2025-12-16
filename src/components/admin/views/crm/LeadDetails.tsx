@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Modal } from '../../../ui/Modal';
 import { Button } from '../../../ui/Button';
 import { Input } from '../../../ui/Input';
@@ -11,7 +11,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Building2,
   Calendar,
   DollarSign,
   TrendingUp,
@@ -24,9 +23,6 @@ import {
   Clock,
   Target,
   Tag,
-  Send,
-  X,
-  Save,
   Trash2,
   PhoneCall,
   Video,
@@ -208,7 +204,7 @@ export function LeadDetails({ lead, onClose, onEdit, onUpdate }: LeadDetailsProp
   );
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Detalles del Lead" size="extra-large">
+    <Modal isOpen={true} onClose={onClose} title="Detalles del Lead" size="xl">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between pb-6 border-b border-gray-200">
@@ -223,7 +219,7 @@ export function LeadDetails({ lead, onClose, onEdit, onUpdate }: LeadDetailsProp
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="info">{lead.status}</Badge>
                   <Badge variant="gray">{lead.source}</Badge>
-                  <Badge variant="purple">{lead.clientType}</Badge>
+                  <Badge variant="info">{lead.clientType}</Badge>
                   <Badge
                     variant={
                       lead.priority === 'urgent' ? 'danger' :
@@ -258,7 +254,7 @@ export function LeadDetails({ lead, onClose, onEdit, onUpdate }: LeadDetailsProp
             </div>
           </div>
 
-          <Button onClick={onEdit} variant="outline">
+          <Button onClick={onEdit} variant="secondary">
             <Edit2 className="w-4 h-4 mr-2" />
             Editar
           </Button>
@@ -705,7 +701,7 @@ export function LeadDetails({ lead, onClose, onEdit, onUpdate }: LeadDetailsProp
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
                   <Paperclip className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-600 mb-2">Arrastra archivos aquí o haz clic para seleccionar</p>
-                  <Button variant="outline">
+                  <Button variant="secondary">
                     Seleccionar Archivos
                   </Button>
                 </div>
@@ -729,7 +725,7 @@ export function LeadDetails({ lead, onClose, onEdit, onUpdate }: LeadDetailsProp
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="sm">
+                          <Button variant="secondary" size="sm">
                             Descargar
                           </Button>
                           <Button variant="ghost" size="sm" className="text-red-600">
@@ -752,7 +748,7 @@ export function LeadDetails({ lead, onClose, onEdit, onUpdate }: LeadDetailsProp
 
         {/* Footer Actions */}
         <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose}>
             Cerrar
           </Button>
         </div>

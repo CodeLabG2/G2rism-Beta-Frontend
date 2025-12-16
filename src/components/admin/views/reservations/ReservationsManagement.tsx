@@ -180,7 +180,7 @@ export function ReservationsManagement() {
     const colors = {
       flight: 'blue',
       hotel: 'green',
-      package: 'orange',
+      package: 'warning',
       transport: 'purple',
     };
     return colors[type as keyof typeof colors] || 'blue';
@@ -199,7 +199,7 @@ export function ReservationsManagement() {
   const getPaymentStatusColor = (status: string) => {
     const colors = {
       pending: 'yellow',
-      partial: 'orange',
+      partial: 'warning',
       paid: 'green',
       refunded: 'purple',
     };
@@ -394,14 +394,14 @@ export function ReservationsManagement() {
           </div>
           <div className="flex gap-2">
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={() => setShowFilters(!showFilters)}
               className={showFilters ? 'bg-gray-100' : ''}
             >
               <Filter size={18} />
               Filtros
             </Button>
-            <Button variant="outline">
+            <Button variant="secondary">
               <Download size={18} />
               Exportar
             </Button>

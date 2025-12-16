@@ -131,7 +131,7 @@ export function TransportUseCases() {
               Familia de 12 personas solicita tour por haciendas cafeteras
             </p>
           </div>
-          <Badge variant="green" size="sm">En Curso</Badge>
+          <Badge variant="success" size="sm">En Curso</Badge>
         </div>
 
         <div className="bg-gray-50 rounded-lg p-4 space-y-3">
@@ -307,7 +307,7 @@ export function TransportUseCases() {
               Análisis de uso y recomendaciones del sistema
             </p>
           </div>
-          <Badge variant="purple" size="sm">Análisis IA</Badge>
+          <Badge variant="info" size="sm">Análisis IA</Badge>
         </div>
 
         <div className="bg-gray-50 rounded-lg p-4 space-y-4">
@@ -430,8 +430,8 @@ export function TransportUseCases() {
             </p>
             <div className="flex flex-wrap gap-2 text-xs">
               <Badge variant="blue" size="sm">GUIA_EJEMPLOS_TRANSPORTE.md</Badge>
-              <Badge variant="green" size="sm">GUIA_RAPIDA_TRANSPORTE.md</Badge>
-              <Badge variant="purple" size="sm">API_INTEGRATION_GUIDE.md</Badge>
+              <Badge variant="success" size="sm">GUIA_RAPIDA_TRANSPORTE.md</Badge>
+              <Badge variant="info" size="sm">API_INTEGRATION_GUIDE.md</Badge>
             </div>
           </div>
         </div>

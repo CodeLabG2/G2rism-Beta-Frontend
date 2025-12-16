@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '../../../ui/Card';
 import { Button } from '../../../ui/Button';
 import { Input } from '../../../ui/Input';
 import { Select } from '../../../ui/Select';
 import { Badge } from '../../../ui/Badge';
-import { Tabs } from '../../../ui/Tabs';
 import { toast } from '../../../ui/Toast';
 import { LeadModal } from './LeadModal';
 import { LeadDetails } from './LeadDetails';
@@ -15,10 +14,9 @@ import {
   CRMStats,
   LeadStatus,
   LeadSource,
-  ClientType,
   Priority
 } from './types';
-import { mockLeads, mockCRMStats } from './mockData';
+import { mockCRMStats } from './mockData';
 import { useClients } from '../../../../hooks/useClients';
 import {
   apiClientsToUiLeads,
@@ -37,13 +35,11 @@ import {
   Mail,
   Calendar,
   Search,
-  Filter,
   Download,
   Plus,
   Eye,
   Edit2,
   Trash2,
-  MoreVertical,
   CheckCircle2,
   AlertCircle,
   ArrowUpRight
@@ -125,7 +121,7 @@ export function CRMManagement() {
       contacted: 'purple',
       qualified: 'cyan',
       proposal: 'warning',
-      negotiation: 'orange',
+      negotiation: 'warning',
       won: 'success',
       lost: 'gray'
     };
@@ -248,7 +244,7 @@ export function CRMManagement() {
         
         if (result.success) {
           // Convertir cliente actualizado a formato Lead
-          const updatedLead = apiClientsToUiLeads([result.data])[0];
+          const updatedLead = apiClientsToUiLeads([result.data!])[0];
           
           // Actualizar estado local
           setLeads(leads.map(l => 
@@ -278,7 +274,7 @@ export function CRMManagement() {
         
         if (result.success) {
           // Convertir cliente creado a formato Lead
-          const newLead = apiClientsToUiLeads([result.data])[0];
+          const newLead = apiClientsToUiLeads([result.data!])[0];
           
           // Agregar al estado local
           setLeads([newLead, ...leads]);
@@ -590,7 +586,7 @@ export function CRMManagement() {
                   { value: 'urgent', label: 'Urgente' }
                 ]}
               />
-              <Button variant="outline" className="w-full">
+              <Button variant="secondary" className="w-full">
                 <Download className="w-5 h-5 mr-2" />
                 Exportar
               </Button>

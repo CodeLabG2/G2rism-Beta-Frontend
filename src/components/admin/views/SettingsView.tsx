@@ -1,6 +1,9 @@
-import React from 'react';
 import { AdminSettingsManagement } from './settings/AdminSettingsManagement';
 
-export function SettingsView() {
+interface SettingsViewProps {
+  canDelete?: boolean;
+}
+
+export function SettingsView({ canDelete }: SettingsViewProps) {
   return <AdminSettingsManagement />;
 }

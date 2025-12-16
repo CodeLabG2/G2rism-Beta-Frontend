@@ -5,7 +5,7 @@ interface Tab {
   id: string;
   label: string;
   icon?: React.ReactNode;
-  content: React.ReactNode;
+  content?: React.ReactNode;
 }
 
 interface TabsProps {
@@ -13,10 +13,11 @@ interface TabsProps {
   defaultTab?: string;
   activeTab?: string;
   onTabChange?: (tabId: string) => void;
+  onChange?: (tabId: string) => void;
   variant?: 'horizontal' | 'vertical';
 }
 
-export function Tabs({ tabs, defaultTab, activeTab: controlledActiveTab, onTabChange, variant = 'horizontal' }: TabsProps) {
+export function Tabs({ tabs, defaultTab, activeTab: controlledActiveTab, onTabChange, onChange, variant = 'horizontal' }: TabsProps) {
   const [internalActiveTab, setInternalActiveTab] = useState(defaultTab || tabs[0]?.id);
   
   const activeTab = controlledActiveTab !== undefined ? controlledActiveTab : internalActiveTab;
@@ -24,7 +25,11 @@ export function Tabs({ tabs, defaultTab, activeTab: controlledActiveTab, onTabCh
   const handleTabChange = (tabId: string) => {
     if (onTabChange) {
       onTabChange(tabId);
-    } else {
+    }
+    if (onChange) {
+      onChange(tabId);
+    }
+    if (!onTabChange && !onChange) {
       setInternalActiveTab(tabId);
     }
   };

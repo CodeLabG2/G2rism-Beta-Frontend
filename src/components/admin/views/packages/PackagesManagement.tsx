@@ -187,7 +187,7 @@ export function PackagesManagement() {
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      adventure: 'orange',
+      adventure: 'warning',
       relaxation: 'blue',
       cultural: 'purple',
       family: 'green',
@@ -406,14 +406,14 @@ export function PackagesManagement() {
           </div>
           <div className="flex gap-2">
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={() => setShowFilters(!showFilters)}
               className={showFilters ? 'bg-gray-100' : ''}
             >
               <Filter size={18} />
               Filtros
             </Button>
-            <Button variant="outline">
+            <Button variant="secondary">
               <Download size={18} />
               Exportar
             </Button>

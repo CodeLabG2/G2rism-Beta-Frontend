@@ -125,7 +125,7 @@ export function LeadModal({ lead, onClose, onSave }: LeadModalProps) {
       isOpen={true}
       onClose={onClose}
       title={lead ? 'Editar Lead' : 'Nuevo Lead'}
-      size="large"
+      size="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Personal Information */}
@@ -391,7 +391,7 @@ export function LeadModal({ lead, onClose, onSave }: LeadModalProps) {
                 }
               }}
             />
-            <Button type="button" onClick={handleAddTag} variant="outline">
+            <Button type="button" onClick={handleAddTag} variant="secondary">
               Agregar
             </Button>
           </div>
@@ -430,7 +430,7 @@ export function LeadModal({ lead, onClose, onSave }: LeadModalProps) {
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button type="button" variant="secondary" onClick={onClose}>
             Cancelar
           </Button>
           <Button type="submit" className="bg-[#3A7AFE] hover:bg-[#3A7AFE]/90">

@@ -272,7 +272,7 @@ export function UserModal({
 
         {/* Botones de acción */}
         <div className="flex justify-end gap-3 pt-4 border-t">
-          <Button variant="outline" onClick={onClose} disabled={isCreating || isUpdating}>
+          <Button variant="secondary" onClick={onClose} disabled={isCreating || isUpdating}>
             Cancelar
           </Button>
           <Button onClick={handleSubmit} disabled={isCreating || isUpdating}>

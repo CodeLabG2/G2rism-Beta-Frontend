@@ -305,7 +305,7 @@ export function EmployeesManagement() {
       key: 'estado',
       label: 'Estado',
       render: (dept: Departamento) => (
-        <Badge variant={dept.activo ? 'green' : 'red'} size="sm">
+        <Badge variant={dept.activo ? 'success' : 'danger'} size="sm">
           {dept.activo ? 'Activo' : 'Inactivo'}
         </Badge>
       ),
@@ -366,7 +366,7 @@ export function EmployeesManagement() {
       key: 'estado',
       label: 'Estado',
       render: (position: Cargo) => (
-        <Badge variant={position.activo ? 'green' : 'red'} size="sm">
+        <Badge variant={position.activo ? 'success' : 'danger'} size="sm">
           {position.activo ? 'Activo' : 'Inactivo'}
         </Badge>
       ),
@@ -442,7 +442,7 @@ export function EmployeesManagement() {
       key: 'estado',
       label: 'Estado',
       render: (commission: Comision) => (
-        <Badge variant={commission.activa ? 'green' : 'red'} size="sm">
+        <Badge variant={commission.activa ? 'success' : 'danger'} size="sm">
           {commission.activa ? 'Activa' : 'Inactiva'}
         </Badge>
       ),

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Calendar,
   DollarSign,
@@ -8,7 +7,6 @@ import {
   TrendingUp,
   Shield,
   AlertCircle,
-  Activity,
   FileText,
 } from 'lucide-react';
 import type { UserWithRoles } from '../../services/types/users.types';

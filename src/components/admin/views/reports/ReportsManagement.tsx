@@ -236,11 +236,11 @@ export function ReportsManagement() {
               ))}
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => handleExport('PDF')}>
+              <Button variant="secondary" onClick={() => handleExport('PDF')}>
                 <Download size={18} />
                 Exportar PDF
               </Button>
-              <Button variant="outline" onClick={() => handleExport('Excel')}>
+              <Button variant="secondary" onClick={() => handleExport('Excel')}>
                 <Download size={18} />
                 Exportar Excel
               </Button>

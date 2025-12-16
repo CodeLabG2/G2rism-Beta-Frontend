@@ -45,7 +45,7 @@ export function PackageDetails({ package: pkg, isOpen, onClose, onEdit, onDelete
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      adventure: 'orange',
+      adventure: 'warning',
       relaxation: 'blue',
       cultural: 'purple',
       family: 'green',
@@ -194,7 +194,7 @@ export function PackageDetails({ package: pkg, isOpen, onClose, onEdit, onDelete
                       {price.season === 'low' && 'Temporada Baja'}
                     </span>
                     {price.discount && (
-                      <Badge variant="green" size="sm">
+                      <Badge variant="success" size="sm">
                         -{price.discount}%
                       </Badge>
                     )}
@@ -354,11 +354,11 @@ export function PackageDetails({ package: pkg, isOpen, onClose, onEdit, onDelete
 
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t">
-            <Button variant="outline" onClick={onClose} className="flex-1">
+            <Button variant="secondary" onClick={onClose} className="flex-1">
               Cerrar
             </Button>
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={handleDelete}
               className="border-red-300 text-red-600 hover:bg-red-50"
             >

@@ -1,6 +1,9 @@
-import React from 'react';
 import { CRMManagement } from './crm/CRMManagement';
 
-export function ClientsView() {
+interface ClientsViewProps {
+  canDelete?: boolean;
+}
+
+export function ClientsView({ canDelete }: ClientsViewProps) {
   return <CRMManagement />;
 }

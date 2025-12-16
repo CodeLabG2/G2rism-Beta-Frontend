@@ -476,7 +476,7 @@ export function SettingsManagement() {
             <div className="flex gap-2">
               {editMode ? (
                 <>
-                  <Button variant="outline" onClick={() => setEditMode(false)}>
+                  <Button variant="secondary" onClick={() => setEditMode(false)}>
                     Cancelar
                   </Button>
                   <Button variant="primary" onClick={handleSaveCompany}>
@@ -564,13 +564,13 @@ export function SettingsManagement() {
           <div className="flex items-center justify-between mb-6">
             <h4>Configuración DIAN</h4>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleTestDian}>
+              <Button variant="secondary" onClick={handleTestDian}>
                 <TestTube size={18} />
                 Probar Conexión
               </Button>
               {editMode ? (
                 <>
-                  <Button variant="outline" onClick={() => setEditMode(false)}>
+                  <Button variant="secondary" onClick={() => setEditMode(false)}>
                     Cancelar
                   </Button>
                   <Button variant="primary" onClick={handleSaveDian}>
@@ -714,11 +714,11 @@ export function SettingsManagement() {
           <div className="flex items-center justify-between mb-6">
             <h4>Logs del Sistema</h4>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleClearCache}>
+              <Button variant="secondary" onClick={handleClearCache}>
                 <RefreshCw size={18} />
                 Limpiar Caché
               </Button>
-              <Button variant="outline">
+              <Button variant="secondary">
                 <Download size={18} />
                 Exportar
               </Button>
