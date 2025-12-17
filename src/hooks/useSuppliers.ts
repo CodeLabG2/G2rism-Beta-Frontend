@@ -1,9 +1,18 @@
+/**
+ * ⚠️ ARCHIVO HOOK - MOD IFICADO PARA USAR SOLO API REAL
+ *
+ * Se eliminó el fallback a datos mock.
+ * Ahora usa únicamente la API real del backend.
+ *
+ * Fecha de modificación: 2025-12-16
+ * Razón: Pruebas de integración con API real G2rismBeta.API
+ */
+
 import { useState, useEffect, useCallback } from 'react';
 import providersService from '../services/api/providersService';
-import { mockProviders } from '../data/mockData';
-import type { 
-  Proveedor, 
-  CreateProveedorDTO, 
+import type {
+  Proveedor,
+  CreateProveedorDTO,
   UpdateProveedorDTO,
   TipoProveedor,
   EstadoProveedor,
@@ -13,12 +22,11 @@ import type {
 /**
  * Hook personalizado para gestión de proveedores
  * Integra providersService con React state management
- * 
+ * Usa directamente la API real del backend
+ *
  * @returns Funciones y estado para gestionar proveedores
  */
 export function useSuppliers() {
-  console.log('useSuppliers: Hook initialized');
-  
   const [suppliers, setSuppliers] = useState<Proveedor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,23 +35,13 @@ export function useSuppliers() {
    * Cargar todos los proveedores
    */
   const loadSuppliers = useCallback(async (filters?: ProveedorFilters) => {
-    console.log('useSuppliers: loadSuppliers called');
     try {
       setLoading(true);
       setError(null);
-      
-      try {
-        const data = await providersService.getAll(filters);
-        console.log('useSuppliers: API data received', data);
-        setSuppliers(data);
-        return data;
-      } catch (apiError) {
-        // Si falla la API, usar datos mock
-        console.log('API no disponible, usando datos mock de proveedores');
-        console.log('useSuppliers: mockProviders =', mockProviders);
-        setSuppliers(mockProviders as Proveedor[]);
-        return mockProviders as Proveedor[];
-      }
+
+      const data = await providersService.getAll(filters);
+      setSuppliers(data);
+      return data;
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || 'Error al cargar proveedores';
       setError(errorMessage);
@@ -51,7 +49,6 @@ export function useSuppliers() {
       return [];
     } finally {
       setLoading(false);
-      console.log('useSuppliers: loadSuppliers finished, loading = false');
     }
   }, []);
 
@@ -76,7 +73,7 @@ export function useSuppliers() {
   const updateSupplier = useCallback(async (id: number, data: UpdateProveedorDTO) => {
     try {
       const updatedSupplier = await providersService.update(id, data);
-      setSuppliers(prev => prev.map(supplier => 
+      setSuppliers(prev => prev.map(supplier =>
         supplier.idProveedor === id ? updatedSupplier : supplier
       ));
       return { success: true, data: updatedSupplier };
@@ -147,7 +144,7 @@ export function useSuppliers() {
   const updateSupplierRating = useCallback(async (id: number, calificacion: number) => {
     try {
       const updatedSupplier = await providersService.updateCalificacion(id, calificacion);
-      setSuppliers(prev => prev.map(supplier => 
+      setSuppliers(prev => prev.map(supplier =>
         supplier.idProveedor === id ? updatedSupplier : supplier
       ));
       return { success: true, data: updatedSupplier };
@@ -164,7 +161,7 @@ export function useSuppliers() {
   const changeSupplierStatus = useCallback(async (id: number, estado: EstadoProveedor) => {
     try {
       const updatedSupplier = await providersService.cambiarEstado(id, estado);
-      setSuppliers(prev => prev.map(supplier => 
+      setSuppliers(prev => prev.map(supplier =>
         supplier.idProveedor === id ? updatedSupplier : supplier
       ));
       return { success: true, data: updatedSupplier };

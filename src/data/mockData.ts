@@ -1,9 +1,17 @@
 /**
- * Datos Mock para G2RISM Platform
- * Estos datos se usan cuando no hay backend disponible
+ * ⚠️ ARCHIVO DE DATOS MOCK - COMENTADO PARA USAR API REAL
+ *
+ * Este archivo contiene todos los datos de prueba (mock) del sistema.
+ * Ha sido comentado para forzar el uso de la API real del backend.
+ *
+ * Para restaurar los datos mock, descomenta las exportaciones necesarias.
+ *
+ * Fecha de comentado: 2025-12-16
+ * Razón: Pruebas de integración con API real G2rismBeta.API
  */
 
 // ==================== RESERVACIONES ====================
+/* MOCK DATA COMENTADO - Usar API real
 export const mockReservations = [
   {
     idReserva: 1,
@@ -2665,3 +2673,32 @@ export const mockDashboardMetrics = {
   ticketPromedio: 1900000,
   tasaConversion: 68.5,
 };
+*/ // FIN MOCK DATA COMENTADO
+
+// ⚠️ Exportaciones vacías para evitar errores de importación
+// Cuando los componentes importen estos datos, recibirán arrays vacíos
+// y deberán usar la API real del backend
+
+export const mockReservations: any[] = [];
+export const mockPackages: any[] = [];
+export const mockClients: any[] = [];
+export const mockProviders: any[] = [];
+export const mockEmployees: any[] = [];
+export const mockSales: any[] = [];
+export const mockUsers: any[] = [];
+export const mockTransports: any[] = [];
+export const mockVehiculos: any[] = [];
+export const mockConductores: any[] = [];
+export const mockRutas: any[] = [];
+export const mockAsignaciones: any[] = [];
+export const mockFacturas: any[] = [];
+export const mockNotasCredito: any[] = [];
+export const mockNotasDebito: any[] = [];
+export const mockSalesReport: any = null;
+export const mockClientAnalytics: any = null;
+export const mockFinancialReport: any = null;
+export const mockReservationStats: any = null;
+export const mockProductPerformance: any[] = [];
+export const mockEmployeePerformance: any[] = [];
+export const mockBusinessKPIs: any[] = [];
+export const mockDashboardMetrics: any = null;

@@ -17,6 +17,12 @@ export function ClientsView({ permissions }: ClientsViewProps) {
   const canCreate = permissions.some(p => p.accion === 'Crear');
   const canEdit = permissions.some(p => p.accion === 'Editar');
 
+  /**
+   * ⚠️ DATOS HARDCODEADOS COMENTADOS - USAR API REAL
+   * Fecha de comentado: 2025-12-16
+   */
+
+  /* DATOS HARDCODEADOS COMENTADOS - Usar API real
   // Mock data - Solo clientes asignados al empleado
   const myClients = [
     {
@@ -85,6 +91,10 @@ export function ClientsView({ permissions }: ClientsViewProps) {
       status: 'Inactivo',
     },
   ];
+  */ // FIN DATOS HARDCODEADOS COMENTADOS
+
+  // ⚠️ Array vacío - Usar API real para obtener clientes del empleado
+  const myClients: any[] = [];
 
   const getCategoryConfig = (category: string) => {
     const configs = {

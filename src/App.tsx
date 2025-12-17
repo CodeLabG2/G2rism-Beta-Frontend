@@ -23,6 +23,13 @@ export default function App() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [welcomePortalType, setWelcomePortalType] = useState<'portal' | 'client'>('portal');
 
+  /**
+   * ⚠️ AUTO-LOGIN COMENTADO - PARA PRUEBAS DE API REAL
+   * Fecha de comentado: 2025-12-16
+   * Razón: Eliminar auto-login para forzar uso de API de autenticación real
+   */
+
+  /* AUTO-LOGIN COMENTADO - Usar API real
   // 🔍 DEMO: Para probar diferentes portales
   // Cambiar el email aquí:
   // - 'juan.perez@g2rism.com' = Super Admin (todos los permisos, PUEDE ELIMINAR)
@@ -33,7 +40,7 @@ export default function App() {
       const employee = getEmployeeByEmail(demoEmail);
       if (employee) {
         setCurrentUser(employee);
-        
+
         // Enrutar según el tipo de usuario
         if (employee.tipoUsuario === 'superadmin') {
           setAppView('superadmin');
@@ -42,17 +49,28 @@ export default function App() {
         } else {
           setAppView('client'); // Por ahora empleados van al cliente, después crear portal empleados
         }
-        
+
         setWelcomePortalType('portal');
       }
     }
   }, []);
+  */ // FIN AUTO-LOGIN COMENTADO
 
+  /* DATOS HARDCODEADOS COMENTADOS - Usar API real
   const clientUser = {
     name: 'María González',
     email: 'maria@cliente.com',
     category: 'Platino',
     points: 2500,
+  };
+  */ // FIN DATOS HARDCODEADOS COMENTADOS
+
+  // ⚠️ Objeto vacío - Usar API real para obtener datos del cliente
+  const clientUser = {
+    name: '',
+    email: '',
+    category: '',
+    points: 0,
   };
 
   // Auth handlers

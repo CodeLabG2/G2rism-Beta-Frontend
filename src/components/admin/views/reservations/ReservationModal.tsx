@@ -14,6 +14,12 @@ interface ReservationModalProps {
   mode: 'create' | 'edit';
 }
 
+/**
+ * ⚠️ DATOS MOCK COMENTADOS - USAR API REAL
+ * Fecha de comentado: 2025-12-16
+ */
+
+/* MOCK DATA COMENTADO - Usar API real
 // Mock clients data
 const mockClients = [
   { id: '1', name: 'Juan Pérez', email: 'juan@example.com', phone: '+57 300 123 4567' },
@@ -21,6 +27,10 @@ const mockClients = [
   { id: '3', name: 'Carlos Rodríguez', email: 'carlos@example.com', phone: '+57 302 345 6789' },
   { id: '4', name: 'Ana Martínez', email: 'ana@example.com', phone: '+57 303 456 7890' },
 ];
+*/ // FIN MOCK DATA COMENTADO
+
+// ⚠️ Array vacío - Usar API real para obtener clientes
+const mockClients: Array<{id: string; name: string; email: string; phone: string}> = [];
 
 export function ReservationModal({ isOpen, onClose, onSave, reservation, mode }: ReservationModalProps) {
   const [formData, setFormData] = useState<ReservationFormData>({

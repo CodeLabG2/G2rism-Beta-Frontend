@@ -12,6 +12,12 @@ export function SalesView({ permissions }: SalesViewProps) {
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState('month');
 
+  /**
+   * ⚠️ DATOS HARDCODEADOS COMENTADOS - USAR API REAL
+   * Fecha de comentado: 2025-12-16
+   */
+
+  /* DATOS HARDCODEADOS COMENTADOS - Usar API real
   // Mock data - Ventas personales del empleado
   const mySales = [
     {
@@ -65,6 +71,10 @@ export function SalesView({ permissions }: SalesViewProps) {
       paymentMethod: 'Transferencia',
     },
   ];
+  */ // FIN DATOS HARDCODEADOS COMENTADOS
+
+  // ⚠️ Array vacío - Usar API real para obtener ventas del empleado
+  const mySales: any[] = [];
 
   const stats = {
     totalSales: mySales.reduce((sum, s) => sum + s.amount, 0),
@@ -75,6 +85,7 @@ export function SalesView({ permissions }: SalesViewProps) {
     averageTicket: mySales.reduce((sum, s) => sum + s.amount, 0) / mySales.length,
   };
 
+  /* DATOS HARDCODEADOS COMENTADOS - Usar API real
   // Datos mensuales para el gráfico
   const monthlyData = [
     { month: 'Jul', sales: 18000000, commission: 1530000 },
@@ -84,6 +95,10 @@ export function SalesView({ permissions }: SalesViewProps) {
     { month: 'Nov', sales: 42000000, commission: 3570000 },
     { month: 'Dic', sales: 48500000, commission: 4122500 },
   ];
+  */ // FIN DATOS HARDCODEADOS COMENTADOS
+
+  // ⚠️ Array vacío - Usar API real para obtener datos mensuales
+  const monthlyData: any[] = [];
 
   const getStatusConfig = (status: string) => {
     return status === 'Pagado'

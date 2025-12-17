@@ -1,14 +1,14 @@
+/**
+ * ⚠️ SERVICIO - MODIFICADO PARA USAR SOLO API REAL
+ *
+ * Se eliminó el fallback a datos mock.
+ * Ahora usa únicamente la API real del backend.
+ *
+ * Fecha de modificación: 2025-12-16
+ * Razón: Pruebas de integración con API real G2rismBeta.API
+ */
+
 import axiosInstance from './axiosInstance';
-import {
-  mockSalesReport,
-  mockClientAnalytics,
-  mockFinancialReport,
-  mockReservationStats,
-  mockProductPerformance,
-  mockEmployeePerformance,
-  mockBusinessKPIs,
-  mockDashboardMetrics,
-} from '../../data/mockData';
 
 // ==================== TIPOS ====================
 
@@ -100,11 +100,11 @@ export interface ExportOptions {
 
 /**
  * Servicio para gestión de reportes y analytics
- * 
+ *
  * @description
  * Maneja todas las operaciones de reportes, estadísticas,
  * KPIs y exportación de datos.
- * 
+ *
  * @author G2rism Team
  * @version 1.0
  */
@@ -117,34 +117,16 @@ class ReportsService {
    * Obtener métricas del dashboard
    */
   async getDashboardMetrics(): Promise<DashboardMetrics> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/dashboard`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para dashboard metrics');
-        return mockDashboardMetrics;
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/dashboard`);
+    return response.data.data;
   }
 
   /**
    * Obtener métricas por rango de fechas
    */
   async getMetricsByDateRange(dateRange: DateRange): Promise<DashboardMetrics> {
-    try {
-      const response = await axiosInstance.post(`${this.baseUrl}/dashboard/rango`, dateRange);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para métricas por rango');
-        return mockDashboardMetrics;
-      }
-      throw error;
-    }
+    const response = await axiosInstance.post(`${this.baseUrl}/dashboard/rango`, dateRange);
+    return response.data.data;
   }
 
   // ==================== VENTAS ====================
@@ -153,54 +135,27 @@ class ReportsService {
    * Obtener reporte de ventas
    */
   async getSalesReport(dateRange?: DateRange): Promise<SalesReport[]> {
-    try {
-      const url = dateRange 
-        ? `${this.baseUrl}/ventas?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
-        : `${this.baseUrl}/ventas`;
-      const response = await axiosInstance.get(url);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para reporte de ventas');
-        return mockSalesReport;
-      }
-      throw error;
-    }
+    const url = dateRange
+      ? `${this.baseUrl}/ventas?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
+      : `${this.baseUrl}/ventas`;
+    const response = await axiosInstance.get(url);
+    return response.data.data;
   }
 
   /**
    * Obtener ventas diarias
    */
   async getDailySales(mes: number, anio: number): Promise<SalesReport[]> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/ventas/diarias?mes=${mes}&anio=${anio}`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para ventas diarias');
-        return mockSalesReport;
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/ventas/diarias?mes=${mes}&anio=${anio}`);
+    return response.data.data;
   }
 
   /**
    * Obtener ventas mensuales
    */
   async getMonthlySales(anio: number): Promise<SalesReport[]> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/ventas/mensuales?anio=${anio}`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para ventas mensuales');
-        return mockSalesReport;
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/ventas/mensuales?anio=${anio}`);
+    return response.data.data;
   }
 
   /**
@@ -210,27 +165,10 @@ class ReportsService {
     anio1: SalesReport[];
     anio2: SalesReport[];
   }> {
-    try {
-      const response = await axiosInstance.get(
-        `${this.baseUrl}/ventas/comparativa?anio1=${anio1}&anio2=${anio2}`
-      );
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para comparativa de ventas');
-        return {
-          anio1: mockSalesReport,
-          anio2: mockSalesReport.map(report => ({
-            ...report,
-            ingresos: report.ingresos * 0.85, // 15% menos en año anterior
-            cantidadVentas: Math.floor(report.cantidadVentas * 0.88),
-            totalVentas: Math.floor(report.totalVentas * 0.88),
-          }))
-        };
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(
+      `${this.baseUrl}/ventas/comparativa?anio1=${anio1}&anio2=${anio2}`
+    );
+    return response.data.data;
   }
 
   // ==================== CLIENTES ====================
@@ -239,51 +177,24 @@ class ReportsService {
    * Obtener analytics de clientes
    */
   async getClientAnalytics(): Promise<ClientAnalytics> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/clientes/analytics`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para analytics de clientes');
-        return mockClientAnalytics;
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/clientes/analytics`);
+    return response.data.data;
   }
 
   /**
    * Obtener top clientes
    */
   async getTopClients(limit: number = 10): Promise<ClientAnalytics['topClientes']> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/clientes/top?limit=${limit}`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para top clientes');
-        return mockClientAnalytics.topClientes.slice(0, limit);
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/clientes/top?limit=${limit}`);
+    return response.data.data;
   }
 
   /**
    * Obtener clientes nuevos por mes
    */
   async getNewClientsByMonth(anio: number): Promise<Array<{ mes: string; cantidad: number }>> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/clientes/nuevos?anio=${anio}`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para clientes nuevos por mes');
-        return mockClientAnalytics.clientesPorMes;
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/clientes/nuevos?anio=${anio}`);
+    return response.data.data;
   }
 
   // ==================== FINANCIERO ====================
@@ -292,20 +203,11 @@ class ReportsService {
    * Obtener reporte financiero
    */
   async getFinancialReport(dateRange?: DateRange): Promise<FinancialReport> {
-    try {
-      const url = dateRange 
-        ? `${this.baseUrl}/financiero?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
-        : `${this.baseUrl}/financiero`;
-      const response = await axiosInstance.get(url);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para reporte financiero');
-        return mockFinancialReport;
-      }
-      throw error;
-    }
+    const url = dateRange
+      ? `${this.baseUrl}/financiero?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
+      : `${this.baseUrl}/financiero`;
+    const response = await axiosInstance.get(url);
+    return response.data.data;
   }
 
   /**
@@ -341,20 +243,11 @@ class ReportsService {
    * Obtener estadísticas de reservas
    */
   async getReservationStats(dateRange?: DateRange): Promise<ReservationStats> {
-    try {
-      const url = dateRange 
-        ? `${this.baseUrl}/reservas?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
-        : `${this.baseUrl}/reservas`;
-      const response = await axiosInstance.get(url);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para estadísticas de reservas');
-        return mockReservationStats;
-      }
-      throw error;
-    }
+    const url = dateRange
+      ? `${this.baseUrl}/reservas?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
+      : `${this.baseUrl}/reservas`;
+    const response = await axiosInstance.get(url);
+    return response.data.data;
   }
 
   /**
@@ -377,37 +270,19 @@ class ReportsService {
    * Obtener desempeño de productos
    */
   async getProductPerformance(dateRange?: DateRange): Promise<ProductPerformance[]> {
-    try {
-      const url = dateRange 
-        ? `${this.baseUrl}/productos?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
-        : `${this.baseUrl}/productos`;
-      const response = await axiosInstance.get(url);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para desempeño de productos');
-        return mockProductPerformance;
-      }
-      throw error;
-    }
+    const url = dateRange
+      ? `${this.baseUrl}/productos?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
+      : `${this.baseUrl}/productos`;
+    const response = await axiosInstance.get(url);
+    return response.data.data;
   }
 
   /**
    * Obtener productos más vendidos
    */
   async getTopProducts(limit: number = 10): Promise<ProductPerformance[]> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/productos/top?limit=${limit}`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para top productos');
-        return mockProductPerformance.slice(0, limit);
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/productos/top?limit=${limit}`);
+    return response.data.data;
   }
 
   /**
@@ -428,37 +303,19 @@ class ReportsService {
    * Obtener desempeño de empleados
    */
   async getEmployeePerformance(dateRange?: DateRange): Promise<EmployeePerformance[]> {
-    try {
-      const url = dateRange 
-        ? `${this.baseUrl}/empleados?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
-        : `${this.baseUrl}/empleados`;
-      const response = await axiosInstance.get(url);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para desempeño de empleados');
-        return mockEmployeePerformance;
-      }
-      throw error;
-    }
+    const url = dateRange
+      ? `${this.baseUrl}/empleados?fechaInicio=${dateRange.fechaInicio}&fechaFin=${dateRange.fechaFin}`
+      : `${this.baseUrl}/empleados`;
+    const response = await axiosInstance.get(url);
+    return response.data.data;
   }
 
   /**
    * Obtener top empleados
    */
   async getTopEmployees(limit: number = 10): Promise<EmployeePerformance[]> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/empleados/top?limit=${limit}`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para top empleados');
-        return mockEmployeePerformance.slice(0, limit);
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/empleados/top?limit=${limit}`);
+    return response.data.data;
   }
 
   // ==================== KPIs ====================
@@ -467,38 +324,16 @@ class ReportsService {
    * Obtener KPIs del negocio
    */
   async getBusinessKPIs(): Promise<KPIData[]> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/kpis`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para KPIs del negocio');
-        return mockBusinessKPIs;
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/kpis`);
+    return response.data.data;
   }
 
   /**
    * Obtener KPI específico
    */
   async getKPIByName(nombre: string): Promise<KPIData> {
-    try {
-      const response = await axiosInstance.get(`${this.baseUrl}/kpis/${nombre}`);
-      return response.data.data;
-    } catch (error: any) {
-      // Si la API no está disponible, usar datos mock
-      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-        console.info('API no disponible, usando datos mock para KPI específico');
-        const kpi = mockBusinessKPIs.find(k => k.nombre === nombre);
-        if (!kpi) {
-          throw new Error(`KPI ${nombre} no encontrado`);
-        }
-        return kpi;
-      }
-      throw error;
-    }
+    const response = await axiosInstance.get(`${this.baseUrl}/kpis/${nombre}`);
+    return response.data.data;
   }
 
   /**

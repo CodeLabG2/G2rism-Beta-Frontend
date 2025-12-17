@@ -32,6 +32,12 @@ import {
   extractPackageId 
 } from '../../../../utils/adapters/packagesAdapter';
 
+/**
+ * ⚠️ DATOS MOCK COMENTADOS - USAR API REAL
+ * Fecha de comentado: 2025-12-16
+ */
+
+/* MOCK DATA COMENTADO - Usar API real
 // Mock destinations (temporal hasta que tengamos endpoint de destinos)
 const mockDestinations: Destination[] = [
   { id: '1', name: 'San Andrés', country: 'Colombia', description: 'Isla paradisíaca del Caribe' },
@@ -41,6 +47,10 @@ const mockDestinations: Destination[] = [
   { id: '5', name: 'Bogotá', country: 'Colombia', description: 'Capital de Colombia' },
   { id: '6', name: 'Tayrona', country: 'Colombia', description: 'Parque Nacional Natural' },
 ];
+*/ // FIN MOCK DATA COMENTADO
+
+// ⚠️ Array vacío - Usar API real para obtener destinos
+const mockDestinations: Destination[] = [];
 
 export function PackagesManagement() {
   // Hook de API

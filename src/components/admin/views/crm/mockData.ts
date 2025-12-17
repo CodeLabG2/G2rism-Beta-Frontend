@@ -1,5 +1,16 @@
+/**
+ * ⚠️ ARCHIVO DE DATOS MOCK CRM - COMENTADO PARA USAR API REAL
+ *
+ * Este archivo contiene datos de prueba del módulo CRM (Leads).
+ * Ha sido comentado para forzar el uso de la API real del backend.
+ *
+ * Fecha de comentado: 2025-12-16
+ * Razón: Pruebas de integración con API real G2rismBeta.API
+ */
+
 import { Lead, CRMStats, LeadStatus, LeadSource } from './types';
 
+/* MOCK DATA COMENTADO - Usar API real
 export const mockLeads: Lead[] = [
   {
     id: 'LEAD-001',
@@ -615,5 +626,27 @@ export const mockCRMStats: CRMStats = {
     interactionsToday: 3,
     tasksToday: 2,
     followUpsToday: 4
+  }
+};
+*/ // FIN MOCK DATA COMENTADO
+
+// ⚠️ Exportaciones vacías para evitar errores de importación
+export const mockLeads: Lead[] = [];
+
+export const mockCRMStats: CRMStats = {
+  totalLeads: 0,
+  activeLeads: 0,
+  convertedLeads: 0,
+  conversionRate: 0,
+  averageResponseTime: 0,
+  averageLeadScore: 0,
+  totalEstimatedValue: 0,
+  leadsByStatus: [],
+  leadsBySource: [],
+  recentActivity: {
+    leadsCreatedToday: 0,
+    interactionsToday: 0,
+    tasksToday: 0,
+    followUpsToday: 0
   }
 };

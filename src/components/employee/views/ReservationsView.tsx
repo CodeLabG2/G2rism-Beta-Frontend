@@ -18,6 +18,12 @@ export function ReservationsView({ permissions }: ReservationsViewProps) {
   const canEdit = permissions.some(p => p.accion === 'Editar');
   const canDelete = permissions.some(p => p.accion === 'Eliminar');
 
+  /**
+   * ⚠️ DATOS HARDCODEADOS COMENTADOS - USAR API REAL
+   * Fecha de comentado: 2025-12-16
+   */
+
+  /* DATOS HARDCODEADOS COMENTADOS - Usar API real
   // Mock data - Solo reservas del empleado actual
   const myReservations = [
     {
@@ -69,6 +75,10 @@ export function ReservationsView({ permissions }: ReservationsViewProps) {
       services: ['Vuelos', 'Hotel 5★', 'Desayuno'],
     },
   ];
+  */ // FIN DATOS HARDCODEADOS COMENTADOS
+
+  // ⚠️ Array vacío - Usar API real para obtener reservas del empleado
+  const myReservations: any[] = [];
 
   const getStatusConfig = (status: string) => {
     const configs = {

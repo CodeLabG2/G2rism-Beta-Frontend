@@ -1,6 +1,17 @@
+/**
+ * ⚠️ ARCHIVO DE DATOS MOCK - COMENTADO PARA USAR API REAL
+ *
+ * Este archivo contiene datos de prueba de empleados, usuarios y permisos.
+ * Ha sido comentado para forzar el uso de la API real del backend.
+ *
+ * Fecha de comentado: 2025-12-16
+ * Razón: Pruebas de integración con API real G2rismBeta.API
+ */
+
 import type { UserWithRoles } from '../services/types/users.types';
 import type { PermissionSummary } from '../services/types/roles.types';
 
+/* MOCK DATA COMENTADO - Usar API real
 // Definir permisos del sistema
 const allPermissions: PermissionSummary[] = [
   // Reservas
@@ -318,4 +329,20 @@ export function getEmployeeById(id: number): UserWithRoles | undefined {
 // Función helper para obtener empleados activos
 export function getActiveEmployees(): UserWithRoles[] {
   return mockEmployees.filter(emp => emp.estado);
+}
+*/ // FIN MOCK DATA COMENTADO
+
+// ⚠️ Exportaciones vacías para evitar errores de importación
+export const mockEmployees: UserWithRoles[] = [];
+
+export function getEmployeeByEmail(email: string): UserWithRoles | undefined {
+  return undefined;
+}
+
+export function getEmployeeById(id: number): UserWithRoles | undefined {
+  return undefined;
+}
+
+export function getActiveEmployees(): UserWithRoles[] {
+  return [];
 }
