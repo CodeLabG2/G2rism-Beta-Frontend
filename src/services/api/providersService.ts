@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from './axiosConfig';
 
 export type TipoProveedor = 'Hotel' | 'Aerolinea' | 'Transporte' | 'Servicios' | 'Mixto';
 export type EstadoProveedor = 'Activo' | 'Inactivo' | 'Suspendido';

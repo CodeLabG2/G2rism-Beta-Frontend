@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from './axiosConfig';
 
 export type EstadoContrato = 'Vigente' | 'Vencido' | 'Cancelado' | 'En_Negociacion';
 

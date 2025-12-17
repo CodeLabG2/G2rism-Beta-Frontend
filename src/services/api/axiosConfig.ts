@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
 
 // Configuración base de la API
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.g2rism.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.g2rism.com';
 
 // Crear instancia de axios
 const axiosInstance: AxiosInstance = axios.create({

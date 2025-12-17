@@ -33,7 +33,7 @@ export { packageService } from './packageService';
 // CONFIGURACIÓN
 // ===========================
 
-export { default as axiosInstance } from './axiosInstance';
+export { default as axiosInstance } from './axiosConfig';
 export { api } from './axiosConfig';
 export { API_ENDPOINTS } from './config/endpoints';
 

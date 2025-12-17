@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from './axiosConfig';
 import type {
   Venta,
   DetalleVenta,

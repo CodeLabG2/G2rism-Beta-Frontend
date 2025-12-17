@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from './axiosConfig';
 import API_ENDPOINTS from './config/endpoints';
 
 export type EstadoCotizacion = 'Pendiente' | 'Enviada' | 'Aceptada' | 'Rechazada' | 'Vencida' | 'Convertida';

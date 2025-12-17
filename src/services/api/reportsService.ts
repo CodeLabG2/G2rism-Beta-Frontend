@@ -8,7 +8,7 @@
  * Razón: Pruebas de integración con API real G2rismBeta.API
  */
 
-import axiosInstance from './axiosInstance';
+import axiosInstance from './axiosConfig';
 
 // ==================== TIPOS ====================
 

@@ -8,7 +8,7 @@
  * Razón: Pruebas de integración con API real G2rismBeta.API
  */
 
-import axiosInstance from './axiosInstance';
+import axiosInstance from './axiosConfig';
 import API_ENDPOINTS from './config/endpoints';
 
 export type EstadoFactura = 'Borrador' | 'Enviada_DIAN' | 'Aprobada_DIAN' | 'Rechazada_DIAN' | 'Anulada';
