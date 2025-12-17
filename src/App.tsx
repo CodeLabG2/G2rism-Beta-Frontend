@@ -143,25 +143,31 @@ export default function App() {
       setIsLoading(true);
       console.log('📝 Registrando nuevo cliente con API real:', data);
 
-      // Llamar a la API real de registro
-      const registerResponse = await authService.register({
-        nombre: data.name,
-        email: data.email,
-        password: data.password,
-        telefono: data.phone || '',
-        documento: data.document || '',
+      // Llamar a la API real de registro con los datos correctos
+      await authService.register({
+        username: data.username,      // Backend requiere username (ingresado por el usuario)
+        nombre: data.name,            // Backend espera "nombre"
+        email: data.email,            // Backend espera "email"
+        password: data.password,      // Backend espera "password"
+        confirmPassword: data.confirmPassword, // Backend espera "confirmPassword"
+        telefono: data.phone || '',   // Backend espera "telefono" (opcional)
+        documento: data.document || '', // Backend espera "documento" (opcional)
+        acceptTerms: data.acceptTerms, // Backend espera "aceptaTerminos"
       });
 
-      console.log('✅ Registro exitoso:', registerResponse);
+      console.log('✅ Registro exitoso y auto-login completado');
 
-      // Guardar usuario actual
-      setCurrentUser(registerResponse.user);
+      // El authService ya hizo auto-login, solo necesitamos obtener el usuario
+      const user = authService.getUser();
+      if (user) {
+        setCurrentUser(user);
 
-      // Cliente registrado va al portal de cliente
-      toast.success('¡Cuenta creada exitosamente!');
-      setAppView('client');
-      setWelcomePortalType('client');
-      setShowWelcome(true);
+        // Cliente registrado va al portal de cliente
+        toast.success('¡Cuenta creada exitosamente!');
+        setAppView('client');
+        setWelcomePortalType('client');
+        setShowWelcome(true);
+      }
     } catch (error: any) {
       console.error('❌ Error en registro:', error);
 

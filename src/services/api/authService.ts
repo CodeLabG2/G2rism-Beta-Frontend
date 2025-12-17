@@ -1,5 +1,5 @@
 import { api } from './axiosConfig';
-import { ApiResponse, LoginRequest, LoginResponse, AuthUser } from './types';
+import { ApiResponse, LoginRequest, RegisterRequest, LoginResponse, RegisterResponseDto, AuthUser, UsuarioLoginDto } from './types';
 
 // ============================================
 // SERVICIO DE AUTENTICACIÓN
@@ -11,23 +11,80 @@ class AuthService {
   private readonly USER_KEY = 'g2rism_user';
 
   /**
-   * Iniciar sesión
+   * 🔄 Convierte UsuarioLoginDto del backend a AuthUser para el frontend
+   *
+   * IMPORTANTE: El backend maneja:
+   * - tipoUsuario: "empleado" o "cliente" (tipo general)
+   * - roles[]: ["Super Administrador", "Administrador", "Empleado", "Cliente"] (roles específicos)
+   *
+   * Debemos mapear basándonos en roles[], NO en tipoUsuario
    */
-  async login(credentials: LoginRequest): Promise<LoginResponse> {
+  private adaptUsuarioToAuthUser(usuario: UsuarioLoginDto): AuthUser {
+    // Determinar el rol en formato frontend basándose en roles[]
+    let role: 'Admin' | 'Employee' | 'Client' = 'Client';
+
+    // Verificar los roles del usuario (puede tener múltiples roles)
+    if (usuario.roles && usuario.roles.length > 0) {
+      const primeraRol = usuario.roles[0].toLowerCase();
+
+      // Mapeo basado en roles[] del backend
+      if (primeraRol.includes('super') || primeraRol === 'super administrador') {
+        role = 'Admin'; // Super Administrador → Admin en frontend
+      } else if (primeraRol === 'administrador' || primeraRol === 'admin') {
+        role = 'Admin'; // Administrador → Admin en frontend
+      } else if (primeraRol === 'empleado' || primeraRol === 'employee') {
+        role = 'Employee'; // Empleado → Employee en frontend
+      } else {
+        role = 'Client'; // Cliente → Client en frontend
+      }
+    } else {
+      // Fallback: si no tiene roles, usar tipoUsuario
+      const tipoUsuario = usuario.tipoUsuario.toLowerCase();
+      role = tipoUsuario === 'empleado' ? 'Employee' : 'Client';
+    }
+
+    return {
+      id: usuario.idUsuario.toString(),
+      name: usuario.username,
+      email: usuario.email,
+      role: role,
+      createdAt: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * Iniciar sesión
+   * Acepta email o username
+   */
+  async login(credentials: { email: string; password: string }): Promise<{ token: string; refreshToken: string; user: AuthUser }> {
     try {
+      // 🔄 Adaptar datos al formato que espera el backend (LoginRequestDto)
+      const loginRequest: LoginRequest = {
+        usernameOrEmail: credentials.email, // Backend acepta email o username
+        password: credentials.password,
+        rememberMe: false,
+      };
+
       const response = await api.post<ApiResponse<LoginResponse>>(
         '/api/auth/login',
-        credentials
+        loginRequest
       );
 
       const loginData = response.data.data;
 
+      // 🔄 Adaptar UsuarioLoginDto a AuthUser
+      const authUser = this.adaptUsuarioToAuthUser(loginData.usuario);
+
       // Guardar tokens y usuario en localStorage
       this.setToken(loginData.token);
       this.setRefreshToken(loginData.refreshToken);
-      this.setUser(loginData.user);
+      this.setUser(authUser);
 
-      return loginData;
+      return {
+        token: loginData.token,
+        refreshToken: loginData.refreshToken,
+        user: authUser,
+      };
     } catch (error) {
       console.error('Error en login:', error);
       throw error;
@@ -36,28 +93,56 @@ class AuthService {
 
   /**
    * Registrar nuevo cliente
+   * Por defecto se registra como Cliente (nivel 50)
+   *
+   * IMPORTANTE: El backend NO hace auto-login en register.
+   * Después de registrar exitosamente, debemos hacer login manualmente.
    */
   async register(data: {
     nombre: string;
     email: string;
     password: string;
-    telefono: string;
-    documento: string;
-  }): Promise<LoginResponse> {
+    confirmPassword: string;
+    telefono?: string;
+    documento?: string;
+    username: string;
+    acceptTerms: boolean;
+  }): Promise<{ user: { id: string; email: string; username: string } }> {
     try {
-      const response = await api.post<ApiResponse<LoginResponse>>(
+      // 🔄 Adaptar datos al formato que espera el backend (RegisterRequestDto)
+      const registerRequest: RegisterRequest = {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+        nombre: data.nombre,
+        apellido: '', // Opcional - el frontend no lo pide por ahora
+        tipoUsuario: 'cliente', // Por defecto siempre es cliente
+        aceptaTerminos: data.acceptTerms,
+      };
+
+      const response = await api.post<ApiResponse<RegisterResponseDto>>(
         '/api/auth/register',
-        data
+        registerRequest
       );
 
-      const loginData = response.data.data;
+      const registerData = response.data.data;
 
-      // Guardar tokens y usuario
-      this.setToken(loginData.token);
-      this.setRefreshToken(loginData.refreshToken);
-      this.setUser(loginData.user);
+      console.log('✅ Usuario registrado, ahora haciendo auto-login...');
 
-      return loginData;
+      // 🔄 Auto-login después del registro exitoso
+      await this.login({
+        email: data.email,
+        password: data.password,
+      });
+
+      return {
+        user: {
+          id: registerData.idUsuario.toString(),
+          email: registerData.email,
+          username: registerData.username,
+        },
+      };
     } catch (error) {
       console.error('Error en registro:', error);
       throw error;
@@ -66,11 +151,17 @@ class AuthService {
 
   /**
    * Cerrar sesión
+   * El backend requiere enviar el idUsuario en el body
    */
   async logout(): Promise<void> {
     try {
-      // Llamar al endpoint de logout (opcional)
-      await api.post('/api/auth/logout');
+      // Obtener el usuario actual para enviar su ID
+      const user = this.getUser();
+
+      if (user && user.id) {
+        // Llamar al endpoint de logout con el idUsuario en el body
+        await api.post('/api/auth/logout', parseInt(user.id));
+      }
     } catch (error) {
       console.error('Error en logout:', error);
     } finally {

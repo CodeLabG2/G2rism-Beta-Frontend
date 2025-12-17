@@ -12,6 +12,7 @@ interface RegisterFormProps {
 
 export function RegisterForm({ onRegister, onSwitchToLogin }: RegisterFormProps) {
   const [formData, setFormData] = useState({
+    username: '',
     name: '',
     email: '',
     phone: '',
@@ -88,6 +89,17 @@ export function RegisterForm({ onRegister, onSwitchToLogin }: RegisterFormProps)
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              type="text"
+              label="Nombre de usuario"
+              placeholder="juanperez"
+              icon={<User size={18} />}
+              value={formData.username}
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              required
+              helperText="Solo letras, números y guiones bajos. Ej: juan_perez"
+            />
+
             <Input
               type="text"
               label="Nombre completo"

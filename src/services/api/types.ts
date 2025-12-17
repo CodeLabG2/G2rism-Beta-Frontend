@@ -24,18 +24,58 @@ export interface PaginatedResponse<T> {
 // AUTENTICACIÓN
 // ============================================
 
+// 🔄 Request al backend - LoginRequestDto
 export interface LoginRequest {
-  email: string;
-  password: string;
+  usernameOrEmail: string; // Backend espera "UsernameOrEmail"
+  password: string;        // Backend espera "Password"
+  rememberMe?: boolean;
 }
 
+// 🔄 Request al backend - RegisterRequestDto
+export interface RegisterRequest {
+  username: string;         // Backend espera "Username" (obligatorio)
+  email: string;            // Backend espera "Email" (obligatorio)
+  password: string;         // Backend espera "Password" (obligatorio)
+  confirmPassword: string;  // Backend espera "ConfirmPassword" (obligatorio)
+  nombre?: string;          // Backend espera "Nombre" (opcional)
+  apellido?: string;        // Backend espera "Apellido" (opcional)
+  tipoUsuario?: string;     // Backend espera "TipoUsuario" (default: "cliente")
+  aceptaTerminos: boolean;  // Backend espera "AceptaTerminos" (obligatorio: true)
+}
+
+// 🔄 Response del backend - LoginResponseDto
 export interface LoginResponse {
   token: string;
   refreshToken: string;
-  user: AuthUser;
+  usuario: UsuarioLoginDto; // Backend retorna "Usuario" (objeto completo)
   expiresIn: number;
+  tokenExpiration?: string;
+  tokenExpirationLocal?: string;
+  timeZone?: string;
 }
 
+// 🔄 UsuarioLoginDto (parte de LoginResponse)
+export interface UsuarioLoginDto {
+  idUsuario: number;
+  username: string;
+  email: string;
+  tipoUsuario: string;
+  roles: string[];
+  permisos: string[];
+}
+
+// 🔄 RegisterResponseDto - El backend NO hace auto-login
+export interface RegisterResponseDto {
+  idUsuario: number;
+  username: string;
+  email: string;
+  tipoUsuario: string;
+  fechaRegistro: string;
+  roles: string[];
+  mensaje: string;
+}
+
+// 🔄 Adaptador: AuthUser para uso interno del frontend
 export interface AuthUser {
   id: string;
   name: string;
