@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LoginForm } from './components/auth/LoginForm';
 import { RegisterForm } from './components/auth/RegisterForm';
 import { ForgotPasswordForm } from './components/auth/ForgotPasswordForm';
@@ -10,51 +10,68 @@ import { SuperAdminPortal } from './components/superadmin/SuperAdminPortal';
 import { AdminPortal } from './components/admin/AdminPortal';
 import { WelcomeModal } from './components/onboarding/WelcomeModal';
 import { Toaster, toast } from 'sonner';
-import { getEmployeeByEmail } from './data/mockEmployees';
+import { authService } from './services/api/authService';
+import type { AuthUser } from './services/api/types';
 import type { UserWithRoles } from './services/types/users.types';
 
 type AppView = 'landing' | 'about' | 'contact' | 'login' | 'register' | 'forgot-password' | 'superadmin' | 'admin' | 'client';
 type AuthView = 'login' | 'register' | 'forgot-password';
 
+/**
+ * 🔄 Convierte AuthUser de la API a UserWithRoles para los portales
+ * Esta es una función temporal de adaptación mientras migramos completamente a la nueva API
+ */
+function adaptAuthUserToUserWithRoles(authUser: AuthUser): UserWithRoles {
+  return {
+    idUsuario: parseInt(authUser.id) || 0,
+    username: authUser.name,
+    email: authUser.email,
+    tipoUsuario: authUser.role.toLowerCase() as 'superadmin' | 'admin' | 'empleado' | 'cliente',
+    estado: true,
+    bloqueado: false,
+    intentosFallidos: 0,
+    ultimoAcceso: new Date().toISOString(),
+    fechaCreacion: authUser.createdAt,
+    roles: [], // Los permisos se manejarán directamente por el backend
+  };
+}
+
 export default function App() {
   const [appView, setAppView] = useState<AppView>('landing');
   const [authView, setAuthView] = useState<AuthView>('login');
-  const [currentUser, setCurrentUser] = useState<UserWithRoles | null>(null);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
   const [welcomePortalType, setWelcomePortalType] = useState<'portal' | 'client'>('portal');
+  const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * ⚠️ AUTO-LOGIN COMENTADO - PARA PRUEBAS DE API REAL
-   * Fecha de comentado: 2025-12-16
-   * Razón: Eliminar auto-login para forzar uso de API de autenticación real
+   * 🔄 RESTAURAR SESIÓN desde localStorage al cargar la app
+   * Si hay un token y usuario guardado, restaurar la sesión automáticamente
    */
+  useEffect(() => {
+    const restoreSession = () => {
+      const token = authService.getToken();
+      const user = authService.getUser();
 
-  /* AUTO-LOGIN COMENTADO - Usar API real
-  // 🔍 DEMO: Para probar diferentes portales
-  // Cambiar el email aquí:
-  // - 'juan.perez@g2rism.com' = Super Admin (todos los permisos, PUEDE ELIMINAR)
-  // - 'maria.gonzalez@g2rism.com' = Administrador (todos los permisos, NO PUEDE ELIMINAR)
-  React.useEffect(() => {
-    const demoEmail = 'maria.gonzalez@g2rism.com'; // 👈 CAMBIAR AQUÍ PARA PROBAR
-    if (demoEmail) {
-      const employee = getEmployeeByEmail(demoEmail);
-      if (employee) {
-        setCurrentUser(employee);
+      if (token && user) {
+        console.log('🔄 Restaurando sesión desde localStorage:', user);
+        setCurrentUser(user);
 
-        // Enrutar según el tipo de usuario
-        if (employee.tipoUsuario === 'superadmin') {
+        // Enrutar según el rol del usuario
+        const userRole = user.role.toLowerCase();
+
+        if (userRole === 'admin') {
           setAppView('superadmin');
-        } else if (employee.tipoUsuario === 'admin') {
+        } else if (userRole === 'employee') {
           setAppView('admin');
         } else {
-          setAppView('client'); // Por ahora empleados van al cliente, después crear portal empleados
+          setAppView('client');
         }
-
-        setWelcomePortalType('portal');
       }
-    }
+    };
+
+    restoreSession();
   }, []);
-  */ // FIN AUTO-LOGIN COMENTADO
 
   /* DATOS HARDCODEADOS COMENTADOS - Usar API real
   const clientUser = {
@@ -65,52 +82,98 @@ export default function App() {
   };
   */ // FIN DATOS HARDCODEADOS COMENTADOS
 
-  // ⚠️ Objeto vacío - Usar API real para obtener datos del cliente
+  // ⚠️ Objeto vacío - Se llenará desde la API después del login
   const clientUser = {
-    name: '',
-    email: '',
-    category: '',
-    points: 0,
+    name: currentUser?.name || '',
+    email: currentUser?.email || '',
+    category: currentUser?.category || '',
+    points: currentUser?.points || 0,
   };
 
   // Auth handlers
-  const handleLogin = (email: string, password: string) => {
-    console.log('Login:', email, password);
-    
-    // Simulate authentication - Verificar primero si es un empleado registrado
-    const employee = getEmployeeByEmail(email);
-    
-    if (employee) {
-      // Es un empleado o admin registrado
-      toast.success(`¡Bienvenido ${employee.username}!`);
-      setCurrentUser(employee);
-      
-      // Enrutar según el tipo de usuario
-      if (employee.tipoUsuario === 'superadmin') {
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      setIsLoading(true);
+      console.log('🔐 Intentando login con API real:', email);
+
+      // Llamar a la API real de autenticación
+      const loginResponse = await authService.login({ email, password });
+
+      console.log('✅ Login exitoso:', loginResponse);
+
+      // Guardar usuario actual
+      setCurrentUser(loginResponse.user);
+
+      // Enrutar según el rol del usuario
+      const userRole = loginResponse.user.role.toLowerCase();
+
+      if (userRole === 'admin') {
+        // Puede ser superadmin o admin regular - por ahora todos a superadmin
+        toast.success(`¡Bienvenido ${loginResponse.user.name}!`);
         setAppView('superadmin');
-      } else if (employee.tipoUsuario === 'admin') {
-        setAppView('admin');
+        setWelcomePortalType('portal');
+      } else if (userRole === 'employee') {
+        toast.success(`¡Bienvenido ${loginResponse.user.name}!`);
+        setAppView('admin'); // Empleados van a admin portal
+        setWelcomePortalType('portal');
       } else {
-        setAppView('client'); // Por ahora empleados van al cliente, después crear portal empleados
+        // Cliente
+        toast.success('¡Bienvenido a tu Portal de Cliente!');
+        setAppView('client');
+        setWelcomePortalType('client');
       }
-      
-      setWelcomePortalType('portal');
+
       setShowWelcome(true);
-    } else {
-      // No es un empleado registrado - es un cliente
-      toast.success('¡Bienvenido a tu Portal de Cliente!');
-      setAppView('client');
-      setWelcomePortalType('client');
-      setShowWelcome(true);
+    } catch (error: any) {
+      console.error('❌ Error en login:', error);
+
+      // Mostrar mensaje de error específico
+      const errorMessage = error.response?.data?.message ||
+                          error.response?.data?.errors?.[0] ||
+                          'Credenciales inválidas. Por favor verifica tu email y contraseña.';
+
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleRegister = (data: any) => {
-    console.log('Register:', data);
-    toast.success('¡Cuenta creada exitosamente!');
-    setAppView('client');
-    setWelcomePortalType('client');
-    setShowWelcome(true);
+  const handleRegister = async (data: any) => {
+    try {
+      setIsLoading(true);
+      console.log('📝 Registrando nuevo cliente con API real:', data);
+
+      // Llamar a la API real de registro
+      const registerResponse = await authService.register({
+        nombre: data.name,
+        email: data.email,
+        password: data.password,
+        telefono: data.phone || '',
+        documento: data.document || '',
+      });
+
+      console.log('✅ Registro exitoso:', registerResponse);
+
+      // Guardar usuario actual
+      setCurrentUser(registerResponse.user);
+
+      // Cliente registrado va al portal de cliente
+      toast.success('¡Cuenta creada exitosamente!');
+      setAppView('client');
+      setWelcomePortalType('client');
+      setShowWelcome(true);
+    } catch (error: any) {
+      console.error('❌ Error en registro:', error);
+
+      // Mostrar mensaje de error específico
+      const errorMessage = error.response?.data?.message ||
+                          error.response?.data?.errors?.[0] ||
+                          'Error al crear la cuenta. Por favor intenta de nuevo.';
+
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Render auth views
@@ -207,47 +270,59 @@ export default function App() {
 
   // Render Portal Unificado (empleados/admins)
   if (appView === 'superadmin') {
+    // Adaptar AuthUser a UserWithRoles para el portal
+    const adaptedUser = currentUser ? adaptAuthUserToUserWithRoles(currentUser) : null;
+
     return (
       <>
         <Toaster position="top-right" />
         {showWelcome && welcomePortalType === 'portal' && !localStorage.getItem('g2rism-welcome-portal') && (
           <WelcomeModal
             portalType="employee"
-            userName={currentUser?.username || 'Usuario'}
+            userName={currentUser?.name || 'Usuario'}
             onClose={() => setShowWelcome(false)}
           />
         )}
-        <SuperAdminPortal
-          user={currentUser!}
-          onLogout={() => {
-            setCurrentUser(null);
-            setAppView('landing');
-            toast.success('Sesión cerrada exitosamente');
-          }}
-        />
+        {adaptedUser && (
+          <SuperAdminPortal
+            user={adaptedUser}
+            onLogout={() => {
+              authService.logout();
+              setCurrentUser(null);
+              setAppView('landing');
+              toast.success('Sesión cerrada exitosamente');
+            }}
+          />
+        )}
       </>
     );
   }
 
   if (appView === 'admin') {
+    // Adaptar AuthUser a UserWithRoles para el portal
+    const adaptedUser = currentUser ? adaptAuthUserToUserWithRoles(currentUser) : null;
+
     return (
       <>
         <Toaster position="top-right" />
         {showWelcome && welcomePortalType === 'portal' && !localStorage.getItem('g2rism-welcome-portal') && (
           <WelcomeModal
             portalType="employee"
-            userName={currentUser?.username || 'Usuario'}
+            userName={currentUser?.name || 'Usuario'}
             onClose={() => setShowWelcome(false)}
           />
         )}
-        <AdminPortal
-          user={currentUser!}
-          onLogout={() => {
-            setCurrentUser(null);
-            setAppView('landing');
-            toast.success('Sesión cerrada exitosamente');
-          }}
-        />
+        {adaptedUser && (
+          <AdminPortal
+            user={adaptedUser}
+            onLogout={() => {
+              authService.logout();
+              setCurrentUser(null);
+              setAppView('landing');
+              toast.success('Sesión cerrada exitosamente');
+            }}
+          />
+        )}
       </>
     );
   }
@@ -264,9 +339,11 @@ export default function App() {
             onClose={() => setShowWelcome(false)}
           />
         )}
-        <ClientPortal 
+        <ClientPortal
           user={clientUser}
           onLogout={() => {
+            authService.logout();
+            setCurrentUser(null);
             setAppView('landing');
             toast.success('Sesión cerrada exitosamente');
           }}
