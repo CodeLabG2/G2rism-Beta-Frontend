@@ -81,6 +81,17 @@ export function UsersManagement() {
     color: '#3A7AFE', // Usar color por defecto
   }));
 
+  // Debug: Mostrar información de roles cargados
+  useEffect(() => {
+    console.log('🔍 DEBUG ROLES:', {
+      isRolesLoading,
+      apiRolesCount: apiRoles?.length || 0,
+      apiRoles,
+      availableRolesCount: availableRoles.length,
+      availableRoles
+    });
+  }, [apiRoles, isRolesLoading, availableRoles]);
+
   // Obtener departamentos únicos
   const departments = Array.from(new Set(users.map((u) => u.department)));
 

@@ -129,30 +129,34 @@ class ClientsService {
 
   /**
    * Obtener cliente por email
-   * GET /api/clientes/email/{email}
-   * 
+   * ⚠️ ENDPOINT NO EXISTE EN EL BACKEND
+   * Alternativa: usar buscar() o getAll() y filtrar manualmente
+   *
    * @param email Email del cliente
-   * @returns Cliente encontrado
+   * @returns Cliente encontrado o null
    */
-  async getByEmail(email: string): Promise<Client> {
-    const response = await axiosInstance.get<ApiResponse<Client>>(
-      API_ENDPOINTS.CLIENTES.BY_EMAIL(email)
-    );
-    return response.data.data;
+  async getByEmail(email: string): Promise<Client | null> {
+    // El backend NO tiene endpoint /api/clientes/email/{email}
+    // Hacemos búsqueda manual usando getAll()
+    const clients = await this.getAll();
+    const client = clients.find(c => c.correoElectronico.toLowerCase() === email.toLowerCase());
+    return client || null;
   }
 
   /**
    * Buscar clientes por término
-   * GET /api/clientes/buscar?q={termino}
-   * 
-   * Busca en: nombre, apellido, documento, email
-   * 
+   * GET /api/clientes/buscar/{termino}
+   *
+   * CORRECCIÓN: El backend usa /{termino} en la URL, NO query params
+   * Busca en: nombre y apellido
+   *
    * @param term Término de búsqueda
    * @returns Lista de clientes que coinciden
    */
   async search(term: string): Promise<Client[]> {
+    // ENDPOINT REAL: GET /api/clientes/buscar/{termino} (línea 215 del backend)
     const response = await axiosInstance.get<ApiResponse<Client[]>>(
-      `${API_ENDPOINTS.CLIENTES.BUSCAR}?q=${encodeURIComponent(term)}`
+      `${API_ENDPOINTS.CLIENTES.BASE}/buscar/${encodeURIComponent(term)}`
     );
     return response.data.data;
   }
@@ -220,28 +224,38 @@ class ClientsService {
 
   /**
    * Activar cliente
-   * POST /api/clientes/{id}/activar
-   * 
+   * PATCH /api/clientes/{id}/estado
+   *
+   * CORRECCIÓN: El backend NO tiene /activar, usa /estado con body boolean
+   *
    * @param id ID del cliente a activar
    * @returns Cliente activado
    */
   async activate(id: number): Promise<Client> {
-    const response = await axiosInstance.post<ApiResponse<Client>>(
-      API_ENDPOINTS.CLIENTES.ACTIVAR(id)
+    // ENDPOINT REAL: PATCH /api/clientes/{id}/estado (línea 515 del backend)
+    // Body: boolean (true para activar)
+    const response = await axiosInstance.patch<ApiResponse<Client>>(
+      `${API_ENDPOINTS.CLIENTES.BASE}/${id}/estado`,
+      true  // El body es directamente el boolean
     );
     return response.data.data;
   }
 
   /**
    * Desactivar cliente
-   * POST /api/clientes/{id}/desactivar
-   * 
+   * PATCH /api/clientes/{id}/estado
+   *
+   * CORRECCIÓN: El backend NO tiene /desactivar, usa /estado con body boolean
+   *
    * @param id ID del cliente a desactivar
    * @returns Cliente desactivado
    */
   async deactivate(id: number): Promise<Client> {
-    const response = await axiosInstance.post<ApiResponse<Client>>(
-      API_ENDPOINTS.CLIENTES.DESACTIVAR(id)
+    // ENDPOINT REAL: PATCH /api/clientes/{id}/estado (línea 515 del backend)
+    // Body: boolean (false para desactivar)
+    const response = await axiosInstance.patch<ApiResponse<Client>>(
+      `${API_ENDPOINTS.CLIENTES.BASE}/${id}/estado`,
+      false  // El body es directamente el boolean
     );
     return response.data.data;
   }
@@ -325,15 +339,16 @@ class ClientsService {
 
   /**
    * Obtener estadísticas de clientes
-   * GET /api/clientes/estadisticas
-   * 
-   * @returns Estadísticas agregadas
+   * ⚠️ ENDPOINT NO EXISTE EN EL BACKEND
+   *
+   * Alternativa: calcular estadísticas localmente
+   *
+   * @returns Estadísticas calculadas
    */
   async getStatistics(): Promise<ClientsStatistics> {
-    const response = await axiosInstance.get<ApiResponse<ClientsStatistics>>(
-      API_ENDPOINTS.CLIENTES.ESTADISTICAS
-    );
-    return response.data.data;
+    // El backend NO tiene endpoint /api/clientes/estadisticas
+    // Usamos el método calculateStatistics() que ya existe
+    return this.calculateStatistics();
   }
 
   /**

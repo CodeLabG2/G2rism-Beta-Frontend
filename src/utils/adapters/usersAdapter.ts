@@ -100,16 +100,18 @@ function formatDateTime(isoDateTime: string): string {
 }
 
 /**
- * Convertir datos del formulario UI a formato API
+ * Convertir datos del formulario UI a formato API para crear usuario
+ * CORREGIDO: Incluye confirmPassword y respeta username tal cual
  */
 export function uiFormDataToApiCreateUser(formData: any) {
   // Generar una contraseña temporal segura
   const tempPassword = generateTemporaryPassword();
-  
+
   return {
-    username: formData.name.toLowerCase().replace(/\s+/g, '.'), // Convertir "Juan Pérez" a "juan.perez"
+    username: formData.name, // Enviar username tal cual (ya validado en el formulario)
     email: formData.email,
     password: tempPassword,
+    confirmPassword: tempPassword, // REQUERIDO por el backend
     tipoUsuario: formData.department === 'Cliente' ? 'cliente' as const : 'empleado' as const,
     rolesIds: formData.roleId ? [parseInt(formData.roleId)] : undefined,
   };
@@ -140,9 +142,11 @@ function generateTemporaryPassword(): string {
 
 /**
  * Convertir datos del formulario UI a formato API para actualización
+ * Solo campos opcionales según UsuarioUpdateDto
  */
 export function uiFormDataToApiUpdateUser(formData: any) {
   return {
+    username: formData.name, // Opcional en actualización
     email: formData.email,
     tipoUsuario: formData.department === 'Cliente' ? 'cliente' as const : 'empleado' as const,
   };

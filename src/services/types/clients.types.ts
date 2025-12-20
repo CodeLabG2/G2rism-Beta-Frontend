@@ -99,17 +99,22 @@ export interface CreateClientDto {
 
 /**
  * DTO para actualizar un cliente
+ * DEBE coincidir con ClienteUpdateDto del backend - TODOS los campos REQUERIDOS excepto algunos
  */
 export interface UpdateClientDto {
-  nombre?: string;
-  apellido?: string;
-  correoElectronico?: string;
-  telefono?: string;
-  direccion?: string;
-  ciudad?: string;
-  pais?: string;
-  idCategoria?: number;
-  estado?: boolean;
+  idCliente: number; // REQUERIDO por el backend
+  idCategoria?: number; // Opcional
+  nombre: string; // REQUERIDO
+  apellido: string; // REQUERIDO
+  documentoIdentidad: string; // REQUERIDO
+  tipoDocumento: 'CC' | 'CE' | 'PA' | 'TI'; // REQUERIDO
+  fechaNacimiento: string; // REQUERIDO (formato: YYYY-MM-DD)
+  correoElectronico: string; // REQUERIDO
+  telefono: string; // REQUERIDO
+  direccion?: string; // Opcional
+  ciudad: string; // REQUERIDO
+  pais: string; // REQUERIDO
+  estado: boolean; // REQUERIDO
 }
 
 /**

@@ -41,21 +41,25 @@ export interface RoleSummary {
 
 /**
  * DTO para crear un nuevo usuario
+ * DEBE coincidir EXACTAMENTE con UsuarioCreateDto del backend
  */
 export interface CreateUserDto {
   username: string;
   email: string;
   password: string;
-  tipoUsuario: 'superadmin' | 'admin' | 'empleado' | 'cliente';
+  confirmPassword: string; // REQUERIDO por el backend
+  tipoUsuario: 'empleado' | 'cliente'; // Backend SOLO acepta estos dos valores
   rolesIds?: number[];
 }
 
 /**
  * DTO para actualizar un usuario existente
+ * DEBE coincidir con UsuarioUpdateDto del backend - TODOS LOS CAMPOS OPCIONALES
  */
 export interface UpdateUserDto {
+  username?: string;
   email?: string;
-  tipoUsuario?: 'superadmin' | 'admin' | 'empleado' | 'cliente';
+  tipoUsuario?: 'empleado' | 'cliente'; // Backend SOLO acepta estos dos valores
 }
 
 /**

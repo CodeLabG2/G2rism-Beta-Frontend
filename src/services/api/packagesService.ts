@@ -1,278 +1,256 @@
 import axiosInstance from './axiosConfig';
+import type { ApiResponse } from '../types/api.types';
 
-// ==================== TIPOS ====================
+// ==================== TIPOS CORREGIDOS ====================
 
-export type EstadoPaquete = 'Activo' | 'Inactivo' | 'Borrador' | 'Archivado';
-export type CategoriaPaquete = 'Aventura' | 'Relax' | 'Cultural' | 'Familiar' | 'Romantico' | 'Negocios';
-export type Temporada = 'Alta' | 'Media' | 'Baja';
-
-export interface Destino {
-  idDestino: number;
-  nombre: string;
-  pais: string;
-  descripcion?: string;
-}
-
-export interface ItinerarioDia {
-  dia: number;
-  titulo: string;
-  descripcion: string;
-  actividades: string[];
-  comidas: string[]; // 'desayuno', 'almuerzo', 'cena'
-}
-
-export interface PrecioPorTemporada {
-  temporada: Temporada;
-  precioPorPersona: number;
-  descuento?: number;
-}
-
+/**
+ * Paquete Turístico - DEBE COINCIDIR con el backend
+ * Backend: PaqueteTuristicoResponseDto
+ */
 export interface PaqueteTuristico {
   idPaquete: number;
-  codigo: string;
   nombre: string;
-  idDestino: number;
-  destino?: Destino; // Poblado por JOIN
-  descripcion: string;
+  detalle?: string;
+  destinoPrincipal: string;
+  destinosAdicionales?: string; // JSON string array
   duracion: number; // días
-  noches: number;
-  categoria: CategoriaPaquete;
-  estado: EstadoPaquete;
-  imagenes: string[]; // URLs de imágenes
-  imagenPrincipal: string;
-  
-  // Precios
-  precioBase: number;
-  precios: PrecioPorTemporada[];
-  
-  // Inclusiones/Exclusiones
-  inclusiones: string[];
-  exclusiones: string[];
-  
-  // Itinerario
-  itinerario: ItinerarioDia[];
-  
-  // Detalles
-  maxPersonas: number;
-  minPersonas: number;
+  precio: number; // decimal en C# = number en TypeScript
   cuposDisponibles: number;
-  
-  // Fechas
-  fechasDisponibles: string[];
+  incluye?: string; // JSON string array
+  noIncluye?: string; // JSON string array
+  fechaInicio?: string; // Formato ISO
+  fechaFin?: string; // Formato ISO
+  tipoPaquete?: string; // aventura, familiar, empresarial, lujo, cultural, ecologico, romantico
+  nivelDificultad?: string; // bajo, medio, alto
+  edadMinima?: number;
+  numeroMinimoPersonas?: number;
+  numeroMaximoPersonas?: number;
+  requisitos?: string; // JSON string array
+  recomendaciones?: string; // JSON string array
+  imagenes?: string; // JSON string array
+  itinerarioResumido?: string;
+  politicasCancelacion?: string;
+  estado: boolean;
   fechaCreacion: string;
-  fechaActualizacion: string;
-  creadoPor: string;
-  
-  // Estadísticas
-  totalVendidos: number;
-  calificacion: number;
-  numeroResenas: number;
+  fechaModificacion?: string;
 }
 
+/**
+ * DTO para crear paquete - DEBE COINCIDIR con PaqueteTuristicoCreateDto del backend
+ */
 export interface CreatePaqueteDTO {
   nombre: string;
-  idDestino: number;
-  descripcion: string;
+  detalle?: string;
+  destinoPrincipal: string;
+  destinosAdicionales?: string;
   duracion: number;
-  categoria: CategoriaPaquete;
-  estado?: EstadoPaquete;
-  imagenes?: string[];
-  imagenPrincipal?: string;
-  precioBase: number;
-  precios?: PrecioPorTemporada[];
-  inclusiones?: string[];
-  exclusiones?: string[];
-  itinerario?: ItinerarioDia[];
-  maxPersonas: number;
-  minPersonas: number;
+  precio: number;
   cuposDisponibles: number;
-  fechasDisponibles?: string[];
+  incluye?: string;
+  noIncluye?: string;
+  fechaInicio?: string;
+  fechaFin?: string;
+  tipoPaquete?: string;
+  nivelDificultad?: string;
+  edadMinima?: number;
+  numeroMinimoPersonas?: number;
+  numeroMaximoPersonas?: number;
+  requisitos?: string;
+  recomendaciones?: string;
+  imagenes?: string;
+  itinerarioResumido?: string;
+  politicasCancelacion?: string;
+  estado?: boolean;
 }
 
+/**
+ * DTO para actualizar paquete - DEBE COINCIDIR con PaqueteTuristicoUpdateDto del backend
+ */
 export interface UpdatePaqueteDTO extends Partial<CreatePaqueteDTO> {}
 
+/**
+ * Filtros para búsqueda de paquetes
+ */
 export interface PaqueteFilters {
-  idDestino?: number;
-  categoria?: CategoriaPaquete;
-  estado?: EstadoPaquete;
+  tipo?: string;
+  destino?: string;
   duracionMin?: number;
   duracionMax?: number;
-  precioMin?: number;
-  precioMax?: number;
-  searchTerm?: string;
+  estado?: boolean;
 }
-
-export interface PaqueteStatistics {
-  total: number;
-  activos: number;
-  borradores: number;
-  totalVentas: number;
-  valorPromedio: number;
-  categoriaPopular: string;
-}
-
-// ==================== SERVICIO ====================
 
 /**
  * Servicio para gestión de paquetes turísticos
- * 
- * @description
- * Maneja todas las operaciones CRUD de paquetes turísticos,
- * incluyendo gestión de itinerarios, precios por temporada,
- * disponibilidad y estadísticas.
- * 
+ *
+ * Backend: PaquetesTuristicosController
+ * Base URL: /api/paquetesturisticos
+ *
  * @author G2rism Team
- * @version 1.0
+ * @version 2.0 - CORREGIDO para coincidir con backend real
  */
 class PackagesService {
-  private readonly baseUrl = '/paquetes';
+  private readonly baseUrl = '/api/paquetesturisticos';
 
   /**
-   * Obtener todos los paquetes (con filtros opcionales)
+   * Obtener todos los paquetes
+   * GET /api/paquetesturisticos
    */
-  async getAll(filters?: PaqueteFilters): Promise<PaqueteTuristico[]> {
-    const params = new URLSearchParams();
-    
-    if (filters?.idDestino) params.append('idDestino', filters.idDestino.toString());
-    if (filters?.categoria) params.append('categoria', filters.categoria);
-    if (filters?.estado) params.append('estado', filters.estado);
-    if (filters?.duracionMin) params.append('duracionMin', filters.duracionMin.toString());
-    if (filters?.duracionMax) params.append('duracionMax', filters.duracionMax.toString());
-    if (filters?.precioMin) params.append('precioMin', filters.precioMin.toString());
-    if (filters?.precioMax) params.append('precioMax', filters.precioMax.toString());
-    if (filters?.searchTerm) params.append('searchTerm', filters.searchTerm);
-
-    const response = await axiosInstance.get(`${this.baseUrl}${params.toString() ? '?' + params.toString() : ''}`);
+  async getAll(): Promise<PaqueteTuristico[]> {
+    const response = await axiosInstance.get<ApiResponse<PaqueteTuristico[]>>(this.baseUrl);
     return response.data.data;
   }
 
   /**
    * Obtener paquete por ID
+   * GET /api/paquetesturisticos/{id}
    */
   async getById(id: number): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.get(`${this.baseUrl}/${id}`);
+    const response = await axiosInstance.get<ApiResponse<PaqueteTuristico>>(
+      `${this.baseUrl}/${id}`
+    );
+    return response.data.data;
+  }
+
+  /**
+   * Buscar paquetes por destino principal
+   * GET /api/paquetesturisticos/destino/{destino}
+   *
+   * @param destino Nombre del destino (string, no ID)
+   */
+  async getByDestination(destino: string): Promise<PaqueteTuristico[]> {
+    const response = await axiosInstance.get<ApiResponse<PaqueteTuristico[]>>(
+      `${this.baseUrl}/destino/${encodeURIComponent(destino)}`
+    );
+    return response.data.data;
+  }
+
+  /**
+   * Buscar paquetes por tipo
+   * GET /api/paquetesturisticos/tipo/{tipo}
+   *
+   * @param tipo aventura, familiar, empresarial, lujo, cultural, ecologico, romantico
+   */
+  async getByType(tipo: string): Promise<PaqueteTuristico[]> {
+    const response = await axiosInstance.get<ApiResponse<PaqueteTuristico[]>>(
+      `${this.baseUrl}/tipo/${encodeURIComponent(tipo)}`
+    );
+    return response.data.data;
+  }
+
+  /**
+   * Obtener paquetes disponibles (activos y con cupos)
+   * GET /api/paquetesturisticos/disponibles
+   */
+  async getDisponibles(): Promise<PaqueteTuristico[]> {
+    const response = await axiosInstance.get<ApiResponse<PaqueteTuristico[]>>(
+      `${this.baseUrl}/disponibles`
+    );
+    return response.data.data;
+  }
+
+  /**
+   * Buscar paquetes por rango de duración
+   * GET /api/paquetesturisticos/duracion?min={min}&max={max}
+   *
+   * @param min Duración mínima en días
+   * @param max Duración máxima en días
+   */
+  async getByDuration(min: number, max: number): Promise<PaqueteTuristico[]> {
+    const response = await axiosInstance.get<ApiResponse<PaqueteTuristico[]>>(
+      `${this.baseUrl}/duracion`,
+      { params: { min, max } }
+    );
     return response.data.data;
   }
 
   /**
    * Crear nuevo paquete turístico
+   * POST /api/paquetesturisticos
+   *
+   * Requiere permiso: paquetes.crear
    */
   async create(data: CreatePaqueteDTO): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.post(this.baseUrl, data);
+    const response = await axiosInstance.post<ApiResponse<PaqueteTuristico>>(
+      this.baseUrl,
+      data
+    );
     return response.data.data;
   }
 
   /**
    * Actualizar paquete existente
+   * PUT /api/paquetesturisticos/{id}
+   *
+   * Requiere permiso: paquetes.actualizar
    */
   async update(id: number, data: UpdatePaqueteDTO): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.put(`${this.baseUrl}/${id}`, data);
+    const response = await axiosInstance.put<ApiResponse<PaqueteTuristico>>(
+      `${this.baseUrl}/${id}`,
+      data
+    );
     return response.data.data;
   }
 
   /**
-   * Eliminar paquete
+   * Eliminar paquete (soft delete)
+   * DELETE /api/paquetesturisticos/{id}
+   *
+   * Requiere permiso: paquetes.eliminar
    */
   async delete(id: number): Promise<void> {
     await axiosInstance.delete(`${this.baseUrl}/${id}`);
   }
 
-  /**
-   * Obtener paquetes por destino
-   */
-  async getByDestination(idDestino: number): Promise<PaqueteTuristico[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/destino/${idDestino}`);
-    return response.data.data;
-  }
-
-  /**
-   * Obtener paquetes por categoría
-   */
-  async getByCategory(categoria: CategoriaPaquete): Promise<PaqueteTuristico[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/categoria/${categoria}`);
-    return response.data.data;
-  }
+  // ===========================
+  // MÉTODOS DE UTILIDAD
+  // ===========================
 
   /**
    * Obtener solo paquetes activos
    */
   async getActive(): Promise<PaqueteTuristico[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/activos`);
-    return response.data.data;
+    const all = await this.getAll();
+    return all.filter(p => p.estado === true);
   }
 
   /**
-   * Cambiar estado del paquete
-   */
-  async changeStatus(id: number, estado: EstadoPaquete): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.patch(`${this.baseUrl}/${id}/estado`, { estado });
-    return response.data.data;
-  }
-
-  /**
-   * Actualizar disponibilidad (cupos)
-   */
-  async updateAvailability(id: number, cuposDisponibles: number): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.patch(`${this.baseUrl}/${id}/disponibilidad`, { cuposDisponibles });
-    return response.data.data;
-  }
-
-  /**
-   * Agregar fecha disponible
-   */
-  async addStartDate(id: number, fecha: string): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.post(`${this.baseUrl}/${id}/fechas`, { fecha });
-    return response.data.data;
-  }
-
-  /**
-   * Eliminar fecha disponible
-   */
-  async removeStartDate(id: number, fecha: string): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.delete(`${this.baseUrl}/${id}/fechas/${fecha}`);
-    return response.data.data;
-  }
-
-  /**
-   * Actualizar itinerario completo
-   */
-  async updateItinerary(id: number, itinerario: ItinerarioDia[]): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.put(`${this.baseUrl}/${id}/itinerario`, { itinerario });
-    return response.data.data;
-  }
-
-  /**
-   * Actualizar precios por temporada
-   */
-  async updatePrices(id: number, precios: PrecioPorTemporada[]): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.put(`${this.baseUrl}/${id}/precios`, { precios });
-    return response.data.data;
-  }
-
-  /**
-   * Obtener estadísticas de paquetes
-   */
-  async getStatistics(): Promise<PaqueteStatistics> {
-    const response = await axiosInstance.get(`${this.baseUrl}/estadisticas`);
-    return response.data.data;
-  }
-
-  /**
-   * Buscar paquetes (búsqueda avanzada)
+   * Buscar paquetes (búsqueda simple local)
    */
   async search(searchTerm: string): Promise<PaqueteTuristico[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/buscar`, {
-      params: { q: searchTerm }
-    });
-    return response.data.data;
+    const all = await this.getAll();
+    const term = searchTerm.toLowerCase();
+    return all.filter(p =>
+      p.nombre.toLowerCase().includes(term) ||
+      p.destinoPrincipal.toLowerCase().includes(term) ||
+      p.detalle?.toLowerCase().includes(term)
+    );
   }
 
   /**
-   * Duplicar paquete (copiar)
+   * Parsear campos JSON de strings a arrays
    */
-  async duplicate(id: number): Promise<PaqueteTuristico> {
-    const response = await axiosInstance.post(`${this.baseUrl}/${id}/duplicar`);
-    return response.data.data;
+  parseJsonFields(paquete: PaqueteTuristico): PaqueteTuristico & {
+    incluyeArray?: string[];
+    noIncluyeArray?: string[];
+    destinosAdicionalesArray?: string[];
+    requisitosArray?: string[];
+    recomendacionesArray?: string[];
+    imagenesArray?: string[];
+  } {
+    try {
+      return {
+        ...paquete,
+        incluyeArray: paquete.incluye ? JSON.parse(paquete.incluye) : [],
+        noIncluyeArray: paquete.noIncluye ? JSON.parse(paquete.noIncluye) : [],
+        destinosAdicionalesArray: paquete.destinosAdicionales ? JSON.parse(paquete.destinosAdicionales) : [],
+        requisitosArray: paquete.requisitos ? JSON.parse(paquete.requisitos) : [],
+        recomendacionesArray: paquete.recomendaciones ? JSON.parse(paquete.recomendaciones) : [],
+        imagenesArray: paquete.imagenes ? JSON.parse(paquete.imagenes) : [],
+      };
+    } catch (error) {
+      console.error('Error parseando campos JSON del paquete:', error);
+      return paquete;
+    }
   }
 }
 
@@ -280,5 +258,5 @@ class PackagesService {
 const packagesService = new PackagesService();
 export default packagesService;
 
-// Re-exportar tipos para facilitar importación
+// Re-exportar tipo
 export type { PaqueteTuristico as Package };

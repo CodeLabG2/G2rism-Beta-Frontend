@@ -72,16 +72,14 @@ class UsersService {
   /**
    * Obtener usuario con sus roles asignados
    * GET /api/usuarios/{id}/roles
-   * 
+   *
    * @param id ID del usuario
    * @returns Usuario con lista de roles
    */
   async getWithRoles(id: number): Promise<UserWithRoles> {
-    // El backend no tiene un endpoint específico de /roles
-    // pero podemos construirlo obteniendo el usuario y roles por separado
-    // Por ahora usamos el endpoint base y asumimos que incluye roles
+    // ENDPOINT REAL: GET /api/usuarios/{id}/roles (línea 182 del backend)
     const response = await axiosInstance.get<ApiResponse<UserWithRoles>>(
-      API_ENDPOINTS.USUARIOS.BY_ID(id)
+      `${API_ENDPOINTS.USUARIOS.BASE}/${id}/roles`
     );
     return response.data.data;
   }
@@ -167,34 +165,37 @@ class UsersService {
 
   /**
    * Asignar roles a un usuario
-   * POST /api/usuarios/asignar-rol
-   * 
+   * POST /api/usuarios/{id}/asignar-roles
+   *
    * IMPORTANTE: Reemplaza TODOS los roles anteriores
-   * 
+   *
    * @param userId ID del usuario
    * @param rolesIds IDs de los roles a asignar
    * @returns Usuario con roles actualizados
    */
   async assignRoles(userId: number, rolesIds: number[]): Promise<UserWithRoles> {
+    // ENDPOINT REAL: POST /api/usuarios/{id}/asignar-roles (línea 536 del backend)
+    // BODY: { rolesIds: number[] } - NO incluir userId en el body
     const response = await axiosInstance.post<ApiResponse<UserWithRoles>>(
-      API_ENDPOINTS.USUARIOS.ASIGNAR_ROL,
-      { userId, rolesIds }
+      `${API_ENDPOINTS.USUARIOS.BASE}/${userId}/asignar-roles`,
+      { rolesIds }
     );
     return response.data.data;
   }
 
   /**
    * Remover un rol de un usuario
-   * POST /api/usuarios/remover-rol
-   * 
+   * DELETE /api/usuarios/{id}/remover-rol/{idRol}
+   *
    * @param userId ID del usuario
    * @param roleId ID del rol a remover
    * @returns Usuario actualizado
    */
   async removeRole(userId: number, roleId: number): Promise<UserWithRoles> {
-    const response = await axiosInstance.post<ApiResponse<UserWithRoles>>(
-      API_ENDPOINTS.USUARIOS.REMOVER_ROL,
-      { userId, roleId }
+    // ENDPOINT REAL: DELETE /api/usuarios/{id}/remover-rol/{idRol} (línea 594 del backend)
+    // Sin body, todo va en la URL
+    const response = await axiosInstance.delete<ApiResponse<UserWithRoles>>(
+      `${API_ENDPOINTS.USUARIOS.BASE}/${userId}/remover-rol/${roleId}`
     );
     return response.data.data;
   }

@@ -37,7 +37,6 @@ export function apiClientToUiLead(client: Client): Lead {
       street: client.direccion || '',
       city: client.ciudad,
       state: '', // No disponible
-      zipCode: '', // No disponible
       country: client.pais
     },
     company: '', // No disponible en el modelo actual
@@ -82,20 +81,24 @@ export function uiLeadFormToApiCreateClient(formData: any): CreateClientDto {
 
 /**
  * Convertir datos de formulario UI a UpdateClientDto para API
+ * IMPORTANTE: UpdateClientDto requiere TODOS los campos (no opcionales)
+ * según ClienteUpdateDto del backend
  */
-export function uiLeadFormToApiUpdateClient(formData: any): UpdateClientDto {
+export function uiLeadFormToApiUpdateClient(formData: any, clientId: number): UpdateClientDto {
   return {
-    nombre: formData.firstName,
-    apellido: formData.lastName,
-    documentoIdentidad: formData.documentId,
-    tipoDocumento: formData.documentType,
-    fechaNacimiento: formData.birthDate,
-    correoElectronico: formData.email,
-    telefono: formData.phone,
-    direccion: formData.address,
-    ciudad: formData.city,
-    pais: formData.country,
+    idCliente: clientId, // REQUERIDO por el backend
     idCategoria: formData.categoryId ? parseInt(formData.categoryId) : undefined,
+    nombre: formData.firstName || '',
+    apellido: formData.lastName || '',
+    documentoIdentidad: formData.documentId || '',
+    tipoDocumento: formData.documentType || 'CC',
+    fechaNacimiento: formData.birthDate || new Date().toISOString().split('T')[0],
+    correoElectronico: formData.email || '',
+    telefono: formData.phone || '',
+    direccion: formData.address,
+    ciudad: formData.city || '',
+    pais: formData.country || '',
+    estado: formData.estado !== undefined ? formData.estado : true,
   };
 }
 

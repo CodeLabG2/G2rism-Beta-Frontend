@@ -1,381 +1,443 @@
 import axiosInstance from './axiosConfig';
+import type { ApiResponse } from '../types/api.types';
 
-// ==================== TIPOS ====================
+// ==================== TIPOS CORREGIDOS ====================
 
-export type TipoReserva = 'Vuelo' | 'Hotel' | 'Paquete' | 'Transporte';
-export type EstadoReserva = 'Pendiente' | 'Confirmada' | 'Cancelada' | 'Completada';
-export type EstadoPago = 'Pendiente' | 'Parcial' | 'Pagado' | 'Reembolsado';
-
-export interface ClienteReserva {
-  idCliente: number;
-  nombres: string;
-  apellidos: string;
-  correoElectronico: string;
-  telefono: string;
-}
-
-export interface DetalleVuelo {
-  aerolinea: string;
-  numeroVuelo: string;
-  origen: string;
-  destino: string;
-  fechaSalida: string;
-  fechaLlegada: string;
-  clase: 'Economica' | 'Ejecutiva' | 'Primera';
-}
-
-export interface DetalleHotel {
-  nombreHotel: string;
-  ubicacion: string;
-  fechaCheckIn: string;
-  fechaCheckOut: string;
-  tipoHabitacion: string;
-  numeroNoches: number;
-}
-
-export interface DetallePaquete {
-  idPaquete: number;
-  nombrePaquete: string;
-  destino: string;
-  fechaInicio: string;
-  fechaFin: string;
-  duracion: number;
-  incluyeVuelos: boolean;
-  incluyeHotel: boolean;
-}
-
-export interface EventoReserva {
-  idEvento: number;
-  tipo: string; // 'creacion', 'confirmacion', 'pago', 'modificacion', 'cancelacion'
-  descripcion: string;
-  fecha: string;
-  usuario: string;
-}
-
-export interface PagoReserva {
-  idPago: number;
-  monto: number;
-  metodoPago: string;
-  fecha: string;
-  referencia?: string;
-  usuario: string;
-}
-
+/**
+ * Reserva - DEBE COINCIDIR con ReservaResponseDto del backend
+ */
 export interface Reserva {
   idReserva: number;
-  codigo: string;
-  tipo: TipoReserva;
   idCliente: number;
-  cliente?: ClienteReserva; // Poblado por JOIN
-  estado: EstadoReserva;
-  estadoPago: EstadoPago;
-  fechaCreacion: string;
-  fechaActualizacion: string;
-  creadoPor: string;
-  actualizadoPor?: string;
-  
-  // Montos
+  nombreCliente: string;
+  idEmpleado: number;
+  nombreEmpleado: string;
+  descripcion?: string;
+  fechaInicioViaje: string; // DateTime del backend
+  fechaFinViaje: string; // DateTime del backend
+  duracionDias: number; // Calculado por el backend
+  numeroPasajeros: number;
   montoTotal: number;
   montoPagado: number;
-  saldo: number;
-  
-  // Detalles opcionales según tipo
-  detalleVuelo?: DetalleVuelo;
-  detalleHotel?: DetalleHotel;
-  detallePaquete?: DetallePaquete;
-  
-  // Información adicional
+  saldoPendiente: number;
+  porcentajePagado: number;
+  estado: 'pendiente' | 'confirmada' | 'cancelada' | 'completada';
+  estaPagada: boolean; // Calculado
+  tieneSaldoPendiente: boolean; // Calculado
+  viajeIniciado: boolean; // Calculado
+  viajeCompleto: boolean; // Calculado
+  diasHastaViaje: number; // Calculado
   observaciones?: string;
-  eventos?: EventoReserva[];
-  pagos?: PagoReserva[];
-  
-  // Datos de viaje
-  fechaViaje?: string;
-  numeroViajeros?: number;
+  fechaHora: string; // Fecha de creación
+  fechaModificacion?: string;
 }
 
+/**
+ * DTO para crear reserva básica - ReservaCreateDto del backend
+ */
 export interface CreateReservaDTO {
-  tipo: TipoReserva;
   idCliente: number;
-  estado?: EstadoReserva;
-  estadoPago?: EstadoPago;
-  montoTotal: number;
-  montoPagado?: number;
+  idEmpleado: number;
+  descripcion?: string;
+  fechaInicioViaje: string; // formato: YYYY-MM-DD
+  fechaFinViaje: string; // formato: YYYY-MM-DD
+  numeroPasajeros: number;
+  estado?: 'pendiente' | 'confirmada';
   observaciones?: string;
-  fechaViaje?: string;
-  numeroViajeros?: number;
-  
-  // Detalles opcionales
-  detalleVuelo?: Partial<DetalleVuelo>;
-  detalleHotel?: Partial<DetalleHotel>;
-  detallePaquete?: Partial<DetallePaquete>;
 }
 
-export interface UpdateReservaDTO extends Partial<CreateReservaDTO> {}
+/**
+ * DTO para actualizar reserva - ReservaUpdateDto del backend
+ */
+export interface UpdateReservaDTO {
+  descripcion?: string;
+  fechaInicioViaje?: string;
+  fechaFinViaje?: string;
+  numeroPasajeros?: number;
+  estado?: 'pendiente' | 'confirmada' | 'cancelada' | 'completada';
+  observaciones?: string;
+}
 
+/**
+ * DTO para reserva completa con servicios - ReservaCompletaCreateDto del backend
+ */
+export interface CreateReservaCompletaDTO {
+  // Datos básicos
+  idCliente: number;
+  idEmpleado: number;
+  descripcion?: string;
+  fechaInicioViaje: string;
+  fechaFinViaje: string;
+  numeroPasajeros: number;
+  estado?: 'pendiente' | 'confirmada';
+  observaciones?: string;
+  // Servicios
+  hoteles?: ReservaHotelCreateDTO[];
+  vuelos?: ReservaVueloCreateDTO[];
+  paquetes?: ReservaPaqueteCreateDTO[];
+  servicios?: ReservaServicioCreateDTO[];
+}
+
+// Sub-tipos para servicios de reserva
+export interface ReservaHotelCreateDTO {
+  idHotel: number;
+  fechaCheckIn: string;
+  fechaCheckOut: string;
+  numeroHabitaciones: number;
+  tipoHabitacion?: string;
+  precioNoche: number;
+  incluyeDesayuno: boolean;
+  regimen?: string;
+  observaciones?: string;
+}
+
+export interface ReservaVueloCreateDTO {
+  idVuelo: number;
+  numeroPasajeros: number;
+  clase: string;
+  precioTotal: number;
+  equipajeIncluido: boolean;
+  equipajeAdicional?: number;
+  asientosSeleccionados?: string;
+  observaciones?: string;
+}
+
+export interface ReservaPaqueteCreateDTO {
+  idPaquete: number;
+  numeroPasajeros: number;
+  precioFinal: number;
+  descuentoAplicado?: number;
+  observaciones?: string;
+}
+
+export interface ReservaServicioCreateDTO {
+  idServicio: number;
+  cantidad: number;
+  precioUnitario: number;
+  descripcion?: string;
+}
+
+/**
+ * Filtros para búsqueda de reservas
+ */
 export interface ReservaFilters {
-  tipo?: TipoReserva;
-  estado?: EstadoReserva;
-  estadoPago?: EstadoPago;
+  estado?: 'pendiente' | 'confirmada' | 'cancelada' | 'completada';
   idCliente?: number;
   fechaDesde?: string;
   fechaHasta?: string;
-  searchTerm?: string;
 }
-
-export interface ReservaStatistics {
-  total: number;
-  pendientes: number;
-  confirmadas: number;
-  canceladas: number;
-  completadas: number;
-  ingresoTotal: number;
-  saldoPendiente: number;
-}
-
-// ==================== SERVICIO ====================
 
 /**
  * Servicio para gestión de reservas
- * 
- * @description
- * Maneja todas las operaciones de reservas incluyendo vuelos,
- * hoteles, paquetes turísticos y transporte. Gestiona estados,
- * pagos, eventos y toda la trazabilidad de las reservas.
- * 
+ *
+ * Backend: ReservasController
+ * Base URL: /api/reservas
+ *
+ * IMPORTANTE: El backend NO tiene concepto de "tipo" de reserva (Vuelo, Hotel, Paquete).
+ * Las reservas son contenedoras que pueden tener múltiples servicios asociados.
+ *
  * @author G2rism Team
- * @version 1.0
+ * @version 2.0 - CORREGIDO para coincidir con backend real
  */
 class ReservationsService {
   private readonly baseUrl = '/api/reservas';
 
   /**
-   * Obtener todas las reservas (con filtros opcionales)
+   * Obtener todas las reservas
+   * GET /api/reservas
    */
   async getAll(filters?: ReservaFilters): Promise<Reserva[]> {
     const params = new URLSearchParams();
-    
-    if (filters?.tipo) params.append('tipo', filters.tipo);
+
     if (filters?.estado) params.append('estado', filters.estado);
-    if (filters?.estadoPago) params.append('estadoPago', filters.estadoPago);
     if (filters?.idCliente) params.append('idCliente', filters.idCliente.toString());
     if (filters?.fechaDesde) params.append('fechaDesde', filters.fechaDesde);
     if (filters?.fechaHasta) params.append('fechaHasta', filters.fechaHasta);
-    if (filters?.searchTerm) params.append('searchTerm', filters.searchTerm);
 
-    const response = await axiosInstance.get(`${this.baseUrl}${params.toString() ? '?' + params.toString() : ''}`);
+    const queryString = params.toString();
+    const url = queryString ? `${this.baseUrl}?${queryString}` : this.baseUrl;
+
+    const response = await axiosInstance.get<ApiResponse<Reserva[]>>(url);
     return response.data.data;
   }
 
   /**
    * Obtener reserva por ID
+   * GET /api/reservas/{id}
    */
   async getById(id: number): Promise<Reserva> {
-    const response = await axiosInstance.get(`${this.baseUrl}/${id}`);
+    const response = await axiosInstance.get<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}`
+    );
     return response.data.data;
   }
 
   /**
-   * Crear nueva reserva
+   * Obtener reservas por cliente
+   * GET /api/reservas/cliente/{idCliente}
+   */
+  async getByClient(idCliente: number): Promise<Reserva[]> {
+    const response = await axiosInstance.get<ApiResponse<Reserva[]>>(
+      `${this.baseUrl}/cliente/${idCliente}`
+    );
+    return response.data.data;
+  }
+
+  /**
+   * Obtener reservas por estado
+   * GET /api/reservas/estado/{estado}
+   *
+   * @param estado pendiente, confirmada, cancelada, completada
+   */
+  async getByStatus(estado: string): Promise<Reserva[]> {
+    const response = await axiosInstance.get<ApiResponse<Reserva[]>>(
+      `${this.baseUrl}/estado/${estado}`
+    );
+    return response.data.data;
+  }
+
+  /**
+   * Crear nueva reserva básica
+   * POST /api/reservas
+   *
+   * Para reservas simples sin servicios asociados
    */
   async create(data: CreateReservaDTO): Promise<Reserva> {
-    const response = await axiosInstance.post(this.baseUrl, data);
+    const response = await axiosInstance.post<ApiResponse<Reserva>>(
+      this.baseUrl,
+      data
+    );
+    return response.data.data;
+  }
+
+  /**
+   * Crear reserva completa con servicios
+   * POST /api/reservas/completa
+   *
+   * Permite crear una reserva y asignarle hoteles, vuelos, paquetes y servicios en una sola transacción
+   */
+  async createComplete(data: CreateReservaCompletaDTO): Promise<Reserva> {
+    const response = await axiosInstance.post<ApiResponse<Reserva>>(
+      `${this.baseUrl}/completa`,
+      data
+    );
     return response.data.data;
   }
 
   /**
    * Actualizar reserva existente
+   * PUT /api/reservas/{id}
    */
   async update(id: number, data: UpdateReservaDTO): Promise<Reserva> {
-    const response = await axiosInstance.put(`${this.baseUrl}/${id}`, data);
+    const response = await axiosInstance.put<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}`,
+      data
+    );
     return response.data.data;
   }
 
   /**
    * Eliminar reserva
+   * DELETE /api/reservas/{id}
    */
   async delete(id: number): Promise<void> {
     await axiosInstance.delete(`${this.baseUrl}/${id}`);
   }
 
   /**
-   * Cambiar estado de la reserva
-   */
-  async changeStatus(id: number, estado: EstadoReserva): Promise<Reserva> {
-    const response = await axiosInstance.patch(`${this.baseUrl}/${id}/estado`, { estado });
-    return response.data.data;
-  }
-
-  /**
    * Confirmar reserva
+   * POST /api/reservas/{id}/confirmar
    */
   async confirm(id: number): Promise<Reserva> {
-    const response = await axiosInstance.post(`${this.baseUrl}/${id}/confirmar`);
+    const response = await axiosInstance.post<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/confirmar`
+    );
     return response.data.data;
   }
 
   /**
    * Cancelar reserva
+   * POST /api/reservas/{id}/cancelar
+   *
+   * @param id ID de la reserva
+   * @param motivoCancelacion Motivo de la cancelación (opcional)
    */
-  async cancel(id: number, motivo?: string): Promise<Reserva> {
-    const response = await axiosInstance.post(`${this.baseUrl}/${id}/cancelar`, { motivo });
+  async cancel(id: number, motivoCancelacion?: string): Promise<Reserva> {
+    const response = await axiosInstance.post<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/cancelar`,
+      { motivoCancelacion }
+    );
+    return response.data.data;
+  }
+
+  // ===========================
+  // GESTIÓN DE HOTELES
+  // ===========================
+
+  /**
+   * Agregar hotel a una reserva
+   * POST /api/reservas/{id}/hoteles
+   */
+  async addHotel(id: number, hotel: ReservaHotelCreateDTO): Promise<Reserva> {
+    const response = await axiosInstance.post<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/hoteles`,
+      hotel
+    );
     return response.data.data;
   }
 
   /**
-   * Completar reserva
+   * Eliminar hotel de una reserva
+   * DELETE /api/reservas/{id}/hoteles/{idHotel}
    */
-  async complete(id: number): Promise<Reserva> {
-    const response = await axiosInstance.post(`${this.baseUrl}/${id}/completar`);
+  async removeHotel(id: number, idHotel: number): Promise<Reserva> {
+    const response = await axiosInstance.delete<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/hoteles/${idHotel}`
+    );
+    return response.data.data;
+  }
+
+  // ===========================
+  // GESTIÓN DE VUELOS
+  // ===========================
+
+  /**
+   * Agregar vuelo a una reserva
+   * POST /api/reservas/{id}/vuelos
+   */
+  async addFlight(id: number, vuelo: ReservaVueloCreateDTO): Promise<Reserva> {
+    const response = await axiosInstance.post<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/vuelos`,
+      vuelo
+    );
     return response.data.data;
   }
 
   /**
-   * Registrar pago para una reserva
+   * Eliminar vuelo de una reserva
+   * DELETE /api/reservas/{id}/vuelos/{idVuelo}
    */
-  async addPayment(id: number, pago: {
-    monto: number;
-    metodoPago: string;
-    referencia?: string;
-  }): Promise<Reserva> {
-    const response = await axiosInstance.post(`${this.baseUrl}/${id}/pagos`, pago);
+  async removeFlight(id: number, idVuelo: number): Promise<Reserva> {
+    const response = await axiosInstance.delete<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/vuelos/${idVuelo}`
+    );
+    return response.data.data;
+  }
+
+  // ===========================
+  // GESTIÓN DE PAQUETES
+  // ===========================
+
+  /**
+   * Agregar paquete turístico a una reserva
+   * POST /api/reservas/{id}/paquetes
+   */
+  async addPackage(id: number, paquete: ReservaPaqueteCreateDTO): Promise<Reserva> {
+    const response = await axiosInstance.post<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/paquetes`,
+      paquete
+    );
     return response.data.data;
   }
 
   /**
-   * Obtener historial de pagos de una reserva
+   * Eliminar paquete de una reserva
+   * DELETE /api/reservas/{id}/paquetes/{idPaquete}
    */
-  async getPayments(id: number): Promise<PagoReserva[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/${id}/pagos`);
+  async removePackage(id: number, idPaquete: number): Promise<Reserva> {
+    const response = await axiosInstance.delete<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/paquetes/${idPaquete}`
+    );
+    return response.data.data;
+  }
+
+  // ===========================
+  // GESTIÓN DE SERVICIOS ADICIONALES
+  // ===========================
+
+  /**
+   * Agregar servicio adicional a una reserva
+   * POST /api/reservas/{id}/servicios
+   */
+  async addService(id: number, servicio: ReservaServicioCreateDTO): Promise<Reserva> {
+    const response = await axiosInstance.post<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/servicios`,
+      servicio
+    );
     return response.data.data;
   }
 
   /**
-   * Obtener eventos/timeline de una reserva
+   * Eliminar servicio de una reserva
+   * DELETE /api/reservas/{id}/servicios/{idServicio}
    */
-  async getEvents(id: number): Promise<EventoReserva[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/${id}/eventos`);
+  async removeService(id: number, idServicio: number): Promise<Reserva> {
+    const response = await axiosInstance.delete<ApiResponse<Reserva>>(
+      `${this.baseUrl}/${id}/servicios/${idServicio}`
+    );
     return response.data.data;
   }
 
-  /**
-   * Agregar evento a la reserva
-   */
-  async addEvent(id: number, evento: {
-    tipo: string;
-    descripcion: string;
-  }): Promise<EventoReserva> {
-    const response = await axiosInstance.post(`${this.baseUrl}/${id}/eventos`, evento);
-    return response.data.data;
-  }
-
-  /**
-   * Obtener reservas por cliente
-   */
-  async getByClient(idCliente: number): Promise<Reserva[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/cliente/${idCliente}`);
-    return response.data.data;
-  }
-
-  /**
-   * Obtener reservas por tipo
-   */
-  async getByType(tipo: TipoReserva): Promise<Reserva[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/tipo/${tipo}`);
-    return response.data.data;
-  }
-
-  /**
-   * Obtener reservas por estado
-   */
-  async getByStatus(estado: EstadoReserva): Promise<Reserva[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/estado/${estado}`);
-    return response.data.data;
-  }
+  // ===========================
+  // MÉTODOS DE UTILIDAD
+  // ===========================
 
   /**
    * Obtener reservas pendientes
    */
   async getPending(): Promise<Reserva[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/pendientes`);
-    return response.data.data;
+    return this.getByStatus('pendiente');
   }
 
   /**
    * Obtener reservas confirmadas
    */
   async getConfirmed(): Promise<Reserva[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/confirmadas`);
-    return response.data.data;
+    return this.getByStatus('confirmada');
   }
 
   /**
-   * Obtener estadísticas de reservas
+   * Obtener reservas canceladas
    */
-  async getStatistics(): Promise<ReservaStatistics> {
-    const response = await axiosInstance.get(`${this.baseUrl}/estadisticas`);
-    return response.data.data;
+  async getCanceled(): Promise<Reserva[]> {
+    return this.getByStatus('cancelada');
   }
 
   /**
-   * Buscar reservas
+   * Obtener reservas completadas
+   */
+  async getCompleted(): Promise<Reserva[]> {
+    return this.getByStatus('completada');
+  }
+
+  /**
+   * Buscar reservas por término (búsqueda local)
    */
   async search(searchTerm: string): Promise<Reserva[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/buscar`, {
-      params: { q: searchTerm }
-    });
-    return response.data.data;
+    const all = await this.getAll();
+    const term = searchTerm.toLowerCase();
+    return all.filter(r =>
+      r.nombreCliente.toLowerCase().includes(term) ||
+      r.nombreEmpleado.toLowerCase().includes(term) ||
+      r.descripcion?.toLowerCase().includes(term)
+    );
   }
 
   /**
-   * Generar voucher de reserva
+   * Calcular estadísticas localmente
    */
-  async generateVoucher(id: number): Promise<Blob> {
-    const response = await axiosInstance.get(`${this.baseUrl}/${id}/voucher`, {
-      responseType: 'blob'
-    });
-    return response.data;
-  }
+  async getStatistics() {
+    const all = await this.getAll();
 
-  /**
-   * Enviar confirmación por email
-   */
-  async sendConfirmationEmail(id: number, email?: string): Promise<void> {
-    await axiosInstance.post(`${this.baseUrl}/${id}/enviar-confirmacion`, { email });
-  }
-
-  /**
-   * Obtener reservas por rango de fechas
-   */
-  async getByDateRange(fechaDesde: string, fechaHasta: string): Promise<Reserva[]> {
-    const response = await axiosInstance.get(`${this.baseUrl}/rango-fechas`, {
-      params: { fechaDesde, fechaHasta }
-    });
-    return response.data.data;
-  }
-
-  /**
-   * Actualizar detalles de vuelo
-   */
-  async updateFlightDetails(id: number, detalleVuelo: DetalleVuelo): Promise<Reserva> {
-    const response = await axiosInstance.put(`${this.baseUrl}/${id}/vuelo`, detalleVuelo);
-    return response.data.data;
-  }
-
-  /**
-   * Actualizar detalles de hotel
-   */
-  async updateHotelDetails(id: number, detalleHotel: DetalleHotel): Promise<Reserva> {
-    const response = await axiosInstance.put(`${this.baseUrl}/${id}/hotel`, detalleHotel);
-    return response.data.data;
-  }
-
-  /**
-   * Actualizar detalles de paquete
-   */
-  async updatePackageDetails(id: number, detallePaquete: DetallePaquete): Promise<Reserva> {
-    const response = await axiosInstance.put(`${this.baseUrl}/${id}/paquete`, detallePaquete);
-    return response.data.data;
+    return {
+      total: all.length,
+      pendientes: all.filter(r => r.estado === 'pendiente').length,
+      confirmadas: all.filter(r => r.estado === 'confirmada').length,
+      canceladas: all.filter(r => r.estado === 'cancelada').length,
+      completadas: all.filter(r => r.estado === 'completada').length,
+      ingresoTotal: all.reduce((sum, r) => sum + r.montoPagado, 0),
+      saldoPendiente: all.reduce((sum, r) => sum + r.saldoPendiente, 0),
+    };
   }
 }
 
@@ -383,5 +445,5 @@ class ReservationsService {
 const reservationsService = new ReservationsService();
 export default reservationsService;
 
-// Re-exportar tipos para facilitar importación
+// Re-exportar tipo
 export type { Reserva as Reservation };
